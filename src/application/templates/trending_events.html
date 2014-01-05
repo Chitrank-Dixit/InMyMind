@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %} Trending Events | Eventus {% endblock %}
+{% block style_block %}
+
+  <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-22043294-2', 'gcdc2013-eventus.appspot.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!-- End Google Analytics -->
+  <style type="text/css">
+    .background {
+       background-color: #F3F3F3;
+      }
+
+    .outer {
+       border-width: 2px solid;
+    }
+  
+  </style>
+{% endblock %}
+{% block content %}
+
+<div class="row pull-right">
+<form class="form-search">
+  <input type="text" class="input-medium search-query">
+  <button type="submit" class="btn">Search</button>
+</form>
+</div>
+<br><br>
+
+
+{% for event_list in events %}
+<!-- Pannel code is not working here ! Include for loop in content body instead -->
+
+<div class="well-inverse">
+    <div class="panel-heading">
+     <h3 class="panel-title"><a href="{{ url_for('event_profile', ename=event_list.name,eid=event_list.key.id() )}}"> {{ event_list.name }}</a></h3>
+    </div>
+    <div class="panel-body">
+        {{ event_list.description }}<br><br>
+    </div>
+    <div class="panel-footer">
+      <img src="#" class='img-circle'/><br><a href="/user/{{ event_list.creator.string_id() }}/{{ event_list.creator_id }}/">{{ event_list.creator.string_id() }}</a></ul>
+    </div>
+        
+    
+</div>                
+<br><br>
+
+
+{% endfor %}
+            
+
+
+{% endblock %}

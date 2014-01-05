@@ -1,0 +1,393 @@
+
+{% extends 'base.html' %}
+
+{% block title %}{{user.name}} Profile | Eventus {% endblock %}
+{% block style_block %}
+	
+	
+{% endblock %}
+{% block content %}
+	
+	<div class="container theme-showcase">
+	<div class="row">
+		{% include 'send_message.html' %}	
+		<div class="span3 background" >
+  		  
+
+  			<img src="{{user.avatar(128)}}" class="img-polaroid" />
+        {% if g.user.id == euid %}
+
+  			   <a href="{{ url_for('user_profile_settings' , name = g.user.name, uid=g.user.id )}}" class="btn btn-default" data-toggle="Edit Your Profile Data" title="Edit Your Profile Data">Edit Profile</a> <br><br>
+           
+
+        {% elif current_user.is_following(user) %}
+  		  	<a href="{{ url_for('unfollow_user', name=user.name, uid=euid) }}" role="button" class="btn btn-danger" data-toggle="Edit Your Profile Data"  title="Unfollow this User">Unfollow</a>
+          <!-- <button data-bind="click: unfollowUser" class="btn btn-danger" data-toggle="Edit Your Profile Data"  title="Unfollow this User">Unfollow</button> --> 
+          <br><br>
+            
+        {% else %}
+  		  	<a href="{{ url_for('follow_user', name=user.name, uid=euid) }}" class="btn btn-success" data-toggle="Edit Your Profile Data"  title="Follow this User">Follow</a> 
+          <!-- <button data-bind="click: followUser" class="btn btn-success" data-toggle="Edit Your Profile Data"  title="Follow this User">Follow</button> -->
+          <br><br><br>
+
+            
+        {% endif %}
+        <h3>{{user.name}}</h3>
+        <h5>{{user.email}}</h5>
+        {% if current_user.is_following(user) and current_user.has_follower(user) %}
+
+        <a href="#send-message-modal" class="btn btn-info btn-block btn-lg btn-large" data-toggle="modal"><i class="icon-envelope"> Send Message</i></a>
+        
+        {% endif %}
+        <hr>
+        <h4>Find me on</h4>
+        <h5><a class="btn btn-google-plus btn-block" href="{{user.googleplus_id}}"><i class="icon-google-plus"> Google Plus</i></a></h5>
+        <h5><a class="btn btn-facebook btn-block" href="{{user.facebook_id}}"><i class="icon-facebook"> Facebook</i></a></h5>
+        <h5><a class="btn btn-twitter btn-block" href="{{user.twitter_id}}"><i class="icon-twitter"> Twitter</i></a></h5>
+        
+        
+
+
+        
+        
+		</div>
+		<div class="span9">
+		<ul class="nav nav-tabs">
+  				<li class="active">
+    				<a href="#posts" data-toggle="tab">Comments</a>
+  		</li>
+ 	 	<li><a href="#favourites" data-toggle="tab">Favourites</a></li>
+  		<li><a href="#events" data-toggle="tab">Events</a></li>
+      <li><a href="#followers" data-toggle="tab">Followers</a></li>
+  		<li><a href="#following" data-toggle="tab">Following</a></li>
+      {% if g.user.id == euid %}
+      <li><a href="#messages" data-toggle="tab">Messages</a></li>
+      {% endif %}
+
+		</ul>
+		<div class="tab-content">
+		<div class="tab-pane active" id="posts">
+      <ul class="nav nav-pills">
+            <li class="active">
+            <a href="#eventscomments" data-toggle="tab">Event Comments</a>
+            </li>
+            <li>
+            <a href="#teamscomments" data-toggle="tab">Team Comments</a>
+            </li>
+            
+      </ul>
+      <div class="tab-content">
+      <div class="tab-pane active" id="eventscomments">
+        {% for com in comments %}
+
+        <div class="well-inverse">
+          <div class="alert alert-success">{{com.event_name.string_id()}}</div>
+          {{com.comment}}
+          
+        </div>
+      {% endfor %}
+      </div>
+
+      <div class="tab-pane" id="teamscomments">
+        {% for tcom in teamcomments %}
+
+        <div class="well-inverse">
+          <div class="alert alert-success">{{tcom.teamName.string_id()}}</div>
+          {{tcom.comment}}
+          
+        </div>
+      {% endfor %}
+      </div>
+      </div>
+    </div>
+		<div class="tab-pane" id="favourites">Be Strong </div>
+		<div class="tab-pane" id="events">
+			{% if not results %}
+				
+            {% if g.user.id == euid %}
+            <div class="alert alert-info">
+        		<strong>{{user.name}}</strong> You Have not Created any Events Yet.
+      			</div>
+      			<p> Start by Creating your first event <a class="btn btn-primary" href="{{ url_for('create_event') }}" role="button"><i class="icon-cloud-upload"></i> Create an Event</a> </p> 
+            {% else %}
+            <div class="alert alert-info">
+              No Events Created Yet
+            </div>
+            {% endif %}
+			      
+
+			{% else %}
+			
+			{% for event_list in results %}
+          <br>
+			    <div class="well-inverse">
+    			<div class="panel-heading">
+     			<h3 class="panel-title">
+            <a href="{{ url_for('event_profile', ename=event_list.name , eid=event_list.key.id() )}}">{{ event_list.name }}</a></h3>
+    			</div>
+    			<div class="panel-body">
+        			{{ event_list.description }}
+    			</div>
+				</div>
+              
+			{% endfor %}
+			
+			{% endif %}
+
+		</div>
+    
+		<div class="tab-pane" id="followers">
+			<div class="row">
+          {% for follower in followers %}
+            {% if follower.followed_id == user.key.id() %}
+            	<div class="span1">
+                <br>
+                <img src="{{ follower.follower_avatar.string_id() }}" class='img-circle' /><br>
+                <a href="/user/{{ follower.follower_name.string_id() }}/{{ follower.follower_id }}" class="btn btn-link">{{ follower.follower_name.string_id() }}</a></div>
+
+            {% endif %}
+          {% endfor %}
+  				
+			</div>
+
+		</div>
+		<div class="tab-pane" id="following">
+
+			<div class="row">
+          {% for follower in followers %}
+            {% if follower.follower_id == user.key.id() %}
+  				    <div class="span1">
+                <br>
+
+                <img src="{{ follower.followed_avatar.string_id() }}" class='img-circle' /><br>
+                <a href="/user/{{ follower.followed_name.string_id() }}/{{ follower.followed_id }}" class="btn btn-link">{{ follower.followed_name.string_id() }}</a></div>
+            {% endif %}
+          {% endfor %}
+  				
+			</div>
+
+		</div>
+
+    {% if g.user.id == euid %}
+    <div class="tab-pane" id="messages">
+       <ul class="nav nav-pills">
+            <li class="active">
+            <a href="#inbox" data-toggle="tab">Inbox</a>
+            </li>
+            <li>
+            <a href="#archived" data-toggle="tab">Archived</a>
+            </li>
+            <li><a href="#sent" data-toggle="tab">Sent</a>
+            </li>
+            <li><a href="#spams" data-toggle="tab">spam</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="inbox">
+               {% for message in inbox %}
+               {% if current_user.id == message.sent_to_id.integer_id() %}
+                <div class="well-inverse">
+                <h4>{{ message.message_title }}</h4>
+                <p>{{ message.message_body }}</p>
+                <a href="{{ url_for('user_profile', name=message.sent_from.string_id() , uid=message.sent_from_id.integer_id()) }}" class="pull-right">{{ message.sent_from.string_id() }}</a>
+
+              </div>
+              {% endif %}
+          
+              {% endfor %}         
+            </div>
+            <div class="tab-pane" id="archived">
+
+            </div>
+            <div class="tab-pane" id="sent">
+                {% for message in inbox %}
+               {% if current_user.id == message.sent_from_id.integer_id() %}
+                <div class="well-inverse">
+                <h4>{{ message.message_title }}</h4>
+                <p>{{ message.message_body }}</p>
+                <a href="{{ url_for('user_profile', name=message.sent_to.string_id() , uid=message.sent_to_id.integer_id()) }}" class="pull-right">{{ message.sent_to.string_id() }}</a>
+
+              </div>
+              {% endif %}
+          
+              {% endfor %}
+            </div>
+            <div class="tab-pane" id="spams">
+
+            </div>
+        </div>
+        
+
+    </div> 
+    
+    {% endif %}
+    
+		</div>
+		</div>
+		
+  	</div>
+  		
+	</div>
+	<hr>
+
+{% block tail_script %}   
+
+<script src="{{ url_for('static', filename='bootstrap/js/jquery.validate.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/additional-methods.js') }}"></script>
+<script type="text/javascript">
+$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+$(document).ready(function () {
+
+$('#send_message').validate({
+    rules: {
+        
+        
+    },
+    
+    highlight: function (element) {
+        $(element).closest('control-group').removeClass('success').addClass('error');
+    },
+    success: function (element) {
+        element.text('OK!').addClass('valid')
+            .closest('.control-group').removeClass('error').addClass('success');
+    }
+});
+});
+
+// Knockoutjs Comment Code
+
+function Comment(data) {
+    this.comment = ko.observable(data.comment);
+    this.name = ko.observable(data.name);
+    this.uid = ko.observable(data.uid);
+   
+    this.cname = this.name();
+    this.cid = this.uid();
+    
+    this.getName = ko.computed(function() {
+        return this.name();
+    }, this);
+
+    this.getUid = ko.computed(function() {
+        return this.uid();
+    }, this);
+    
+}
+
+
+
+function FollowViewModel() {
+    var self = this;
+    self.users = ko.observableArray([]);
+    self.userInfo = ko.observableArray([]);
+    self.invites = ko.observableArray([]);
+    self.comments = ko.observableArray([]);
+    self.comment = ko.observable();
+    self.allSelected= ko.observable(false);
+    self.url =  ko.observable("{{ url_for('follow_user', name=user.name, uid=euid) }}");
+    
+    self.selectAll = function() {
+        var all = self.allSelected();
+        ko.utils.arrayForEach(self.users(), function(user) {
+           user.isSelected(!all); 
+        });
+        return true;
+    }       
+    
+    self.inviteUser = function() {
+        self.invites.push(new AddInvite({ title: this.newTaskText() }));
+               
+        
+    };
+       
+    
+
+    self.followUser = function() {
+        self.saveFollow();
+               
+        
+    };
+
+    self.unfollowUser = function() {
+        self.saveUnfollow();
+               
+        
+    };
+
+    /*$.getJSON("", function(commentModels) {
+        var t = $.map(commentModels.comments, function(item) {
+            return new Comment(item);
+
+        });
+        self.comments(t);
+
+    });*/
+
+    $.getJSON('/users', function(invitationModels) {
+        var t = $.map(invitationModels.users, function(item) {
+            console.log("Something",item);
+            return new Invite(item);
+        });
+        self.users(t);
+    });
+
+    
+
+    self.saveFollow = function() {
+        return $.ajax({
+            url: "{{ url_for('follow_user', name=user.name, uid=euid) }}",
+            contentType: 'application/json',
+            type: 'POST',
+            data: JSON.stringify({
+                
+            }),
+
+
+            success: function(data) {
+                console.log("Pushing to comment array");
+                self.comments.push(new Comment({ comment: data.comment, name: data.name, uid: data.uid }));
+                return;
+            },
+            error: function() {
+              console.log(ename);
+                return console.log("Failed");
+            }
+        });
+    };
+
+    self.saveUnfollow = function() {
+        return $.ajax({
+            url: "{{ url_for('unfollow_user', name=user.name, uid=euid) }}",
+            contentType: 'application/json',
+            type: 'POST',
+            data: JSON.stringify({
+                
+            }),
+
+
+            success: function(data) {
+                
+                return;
+            },
+            error: function() {
+              console.log(ename);
+                return console.log("Failed");
+            }
+        });
+    };
+}
+
+
+
+// enable validation
+// ko.validation.init();
+
+// Activates knockout.js
+ko.applyBindings(new FollowViewModel());
+
+
+</script>
+{% endblock %}
+
+{% endblock %}

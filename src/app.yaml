@@ -1,0 +1,48 @@
+application: gcdc2013-eventus
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+default_expiration: "5d"
+
+builtins:
+- appstats: on
+- admin_redirect: on
+- deferred: on
+- remote_api: on
+
+libraries:
+- name: jinja2
+  version: latest
+- name: markupsafe
+  version: latest
+
+inbound_services:
+- warmup
+- mail
+
+handlers:
+- url: /favicon.ico
+  static_files: application/static/img/favicon.ico
+  upload: application/static/img/favicon.ico
+
+- url: /robots.txt
+  static_files: application/static/robots.txt
+  upload: application/static/robots.txt
+
+- url: /gae_mini_profiler/static
+  static_dir: lib/gae_mini_profiler/static
+
+- url: /gae_mini_profiler/.*
+  script: lib.gae_mini_profiler.main.application
+
+- url: /static
+  static_dir: application/static
+
+- url: .*
+  script: run.application.app
+
+- url: /_ah/mail/.+
+  script: handle_incoming_email.app
+  login: admin

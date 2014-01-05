@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %} Sign in | Eventus {% endblock %}
+{% block style_block %}
+	
+{% endblock %}
+{% block content %}
+	<div class="container theme-showcase">
+	<div class="row">
+	 
+			<h3><center>Sign in Eventus</center></h3><br><br>
+			
+		<div class="col-sm-6">
+			
+  			<form name="signin" id="signin_form" class="navbar-form form-horizontal" action="/signin/" method="post" >
+  				{{ form.csrf_token }}
+				<fieldset>
+  				{{ form.hidden_tag() }}
+            {% from "macro/_formhelpers.html" import render_field %}
+            <div class="control-group">
+                   {{ form.email.label }}
+                    <div class="controls">
+                        {{ form.email(id='email',class_='form-control required', placeholder="Enter Mail") }}
+                        {% if form.email.errors %}
+                        <ul class="errors">
+                            {% for error in form.email.errors %}
+                            <li class="flashes alert-warning">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                        
+                    </div> 
+            </div>
+            <div class="control-group">
+                    {{ form.password.label }}
+                    <div class="controls">
+                        {{ form.password(id='password',class_='form-control required',placeholder="Enter Password") }}
+                        {% if form.password.errors %}
+                        <ul class="errors">
+                            {% for error in form.password.errors %}
+                            <li class="flashes alert-warning">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+            </div><br>
+            <p class="control-group">
+              <a href="" class="pull-right">forgot password</a>
+              {{form.remember_me}} Remember Me <br><br>
+              
+            </p>
+
+            <div class="control-group">
+                    <!-- <div class="control-label">{{ form.password.label }}</div> -->
+                    <div class="controls">
+                        {{ render_field(form.recaptcha, class="form-control") }}
+                        
+                    </div>
+            </div>
+            
+            <div class="control-group">
+                    <div class="controls">
+                        <br><br>
+  								<button type="submit" name="signin_submit" value"Signin" class="btn btn-success" >Sign in</button><br><br>
+                  <ul class="pull-right">Not yet Registered<a href="{{ url_for('signup') }}" > Please Sign Up </a></ul>
+  								Already a Member <a href="{{ url_for('signin') }}">Sign in</a>
+
+                    </div>
+            </div>
+  				<!-- <input type="text" name="username" value="" placeholder="your username" class="form-control" /><br><br>
+  				<input type="text" name="password" value="" placeholder="your password" class="form-control" /><br><br><br>
+  				<input type="checkbox" name="remember" value="" class="form-control" style="width: 15px; height: 12px;"/> Remember me
+  				<a href="" class="pull-right">forgot password</a><br><br><br>
+  				<input type="submit" name="signin_submit" value"Sign In" class="btn btn-success" /> -->
+  				
+  				</fieldset>
+  			</form>
+        <br><br>
+				
+    				
+		</div>
+		<div class="col-sm-1">
+		</div>
+		<div class="col-sm-5">
+			<div class="row">
+			<div class="col-lg-7">
+        <a class="btn btn-block btn-lg btn-google-plus" href="/signin/google/">
+        		<i class="icon-large icon-google-plus"></i> 
+        			Sign in with Google
+      	</a>	
+      	<a class="btn btn-block btn-lg btn-google-plus" href="/signin/googleoauth/">
+        		<i class="icon-large icon-google-plus"></i> 
+        			Sign in with Google plus
+      	</a>	
+			<a class="btn btn-block btn-lg btn-facebook" href="/signin/facebook/">
+        		<i class="icon-large icon-facebook"></i>
+        			Sign in with Facebook
+      	</a>	
+      	<a class="btn btn-block btn-twitter" href="/signin/twitter/">
+        		<i class="icon-large icon-twitter"></i> 
+        			Sign in with Twitter
+      	</a>	
+			</div>
+			</div>
+		</div>
+		
+		
+	</div>
+		
+  		
+  	</div>
+{% block tail_script %}		
+<script src="{{ url_for('static', filename='bootstrap/js/jquery.validate.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/additional-methods.js') }}"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+
+$('#signin_form').validate({
+    rules: {
+        
+    },
+    highlight: function (element) {
+        
+        $(element).closest('control-group').removeClass('success').addClass('error');
+        
+    },
+    success: function (element) {
+        element.text('OK!').addClass('valid')
+            .closest('control-group').removeClass('error').addClass('success');
+    }
+});
+});
+
+</script>
+{% endblock %}
+	
+{% endblock %}
+
+
+
