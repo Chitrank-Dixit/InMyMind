@@ -456,8 +456,8 @@ class admin(flask.views.MethodView):
 ################################################################################
 
 
-GOOGLE_CLIENT_ID = '284844940078.apps.googleusercontent.com'
-GOOGLE_CLIENT_SECRET = '1AXUm5M_1tYd13xNfn3MxDj6'
+GOOGLE_CLIENT_ID = '987638626090.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = '4LkkuvOFHPCN2ziu58soAHQW'
 REDIRECT_URI = 'http://localhost:8080/oauth-authorized/'  # one of the Redirect URIs from Google APIs console
 
 
@@ -607,8 +607,8 @@ twitter = twitter_oauth.remote_app(
     request_token_url='https://api.twitter.com/oauth/request_token',
     access_token_url='https://api.twitter.com/oauth/access_token',
     authorize_url='https://api.twitter.com/oauth/authorize',
-    consumer_key='LTjPJGBUqaFXaqW7tj0gpQ',
-    consumer_secret='baTEyBGq07hKGQiXAQSSe76VYBQI92P2k8Cl5ZkDgQ',
+    consumer_key='SapJ3HRxGelG1CBFrAkyg',
+    consumer_secret='4nSncYdhHxEFGx4sMeqqajylhPh5Ue5wY3YhuhLsfo',
   )
 
 
@@ -671,8 +671,8 @@ facebook = facebook_oauth.remote_app(
     request_token_url=None,
     access_token_url='/oauth/access_token',
     authorize_url='https://www.facebook.com/dialog/oauth',
-    consumer_key='165055130361980',
-    consumer_secret='3d18b99751acc6cfd7b0277aa1b308a8',
+    consumer_key='1439982819553179',
+    consumer_secret='0698a668bccff70e9594ff75f7f856a5',
     request_token_params={'scope': 'email'},
   )
 
