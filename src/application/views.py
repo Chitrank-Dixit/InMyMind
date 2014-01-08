@@ -776,29 +776,31 @@ def crop_youtube_url(url):
 #
 #################################################################
 
-@app.route('/share_post/', methods=['POST','GET'])
+@app.route('/share_post/', methods=['GET','POST'])
 @login_required
 def share_a_post():
-  """
-
-  """
   form = PostBoxForm(request.form)
-
   use_db = ndb.Key(model.User, current_user.name)
   id_db = ndb.Key(model.User, current_user.id)
   print use_db, id_db.integer_id()
-  if request.method == 'POST':
-    tags = request.args['small']
-    print tags
-    post = PostBox(
+  if request.method=='POST':
+    print "hii"
+    sharepost = model.PostBox(
       postby = id_db,
-      posturl = form.posturl.data ,
-      safetowork = request.args['safe'],
+      postUrl = form.posturl.data ,
+      safeToWork = request.form['safe'],
       about = form.about.data,
-      comments = form.comment.data , 
+      comment = form.comment.data , 
       language = form.language.data,
-      tags = request.args['small']
+      tags = form.tags.data,
+      credits = 100 
       )
+    try:
+      sharedpost = sharepost.put()
+      time.sleep(4)
+      #return redirect(url_for('Team_Profile', ename = ename , eid =  eid, teamName = form.teamName.data, tid= team.integer_id() ))
+    except CapabilityDisabledError:
+      flash('Something went wrong and your comment has not been posted', category='danger')
   return render_template('share_story.html', form= form)
 
 

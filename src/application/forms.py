@@ -29,6 +29,15 @@ ExampleForm = model_form(ExampleModel, wtf.Form, field_args={
     'example_description': dict(validators=[validators.Required()]),
 })
 '''
+
+aboutlist = [("Computer Science", "Computer Science"),
+("Entertainment", "Entertainment"),
+("Bollywood", "Bollywood")]
+
+languagelist = [("Hindi", "Hindi"),
+("English","English"),
+("Spanish","Spanish")]
+
 class SignupForm(wtf.Form):
     name = wtf.TextField('Name', validators=[validators.Required()])
 
@@ -47,11 +56,12 @@ class SigninForm(wtf.Form):
 
     
 class PostBoxForm(wtf.Form):
+    global aboutlist, languagelist
     posturl = wtf.html5.URLField('posturl')
-    about = wtf.SelectField('about', choices=[('',''),('','')],validators=[validators.Required()] )
+    about = wtf.SelectField('about', choices=aboutlist,validators=[validators.Required()] )
     tags = wtf.TextField('tags')
     comment = wtf.TextAreaField('comment', default='')
-    language  = wtf.SelectField('language', choices=[('',''),('','')],validators=[validators.Required()])
+    language  = wtf.SelectField('language', choices=languagelist,validators=[validators.Required()])
 
 
 class CreateEventForm(wtf.Form):

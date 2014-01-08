@@ -141,7 +141,7 @@
                     <!-- Post Name -->
                     <div class="controls" >
                         <label class="span2"> <h5>Comment <font size="1" color="#C43F2C">(optional)</font></h5> </label>
-                        {{ form.comment(id='comment', class='form-control required span4', placeholder="your comment",  autocomplete=True)}}
+                        {{ form.comment(id='comment', class='form-control required span4', placeholder="your comment",  autocomplete=True, style='height: 100px;' )}}
                         {% if form.comment.errors %}
                         <ul class="errors">
                             {% for error in form.comment.errors %}
@@ -179,7 +179,7 @@
                     <!-- Post Name -->
                     <div class="controls" >
                         <label class="span2"> <h5>Tags <font size="1" color="#C43F2C">(optional)</font></h5> </label></h5> </label>
-                        {{ form.tags(id='tags', class='form-control required span4 ', placeholder="your post url", autocomplete=True)}}
+                        {{ form.tags(id='tags', class='form-control required span4 ', placeholder="enter tags seperated by commma", autocomplete=True )}}
                         {% if form.tags.errors %}
                         <ul class="errors">
                             {% for error in form.tags.errors %}
@@ -192,8 +192,7 @@
                     <!-- Post name div end below-->
                     </div>
                 <!-- Post name control-group end below -->    
-                </div><br><br>
-
+                </div>
                 <!-- Share a post button -->
                 <div class="form-actions">
 

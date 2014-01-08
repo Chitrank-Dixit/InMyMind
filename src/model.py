@@ -45,7 +45,7 @@ class Config(Base, modelx.ConfigX):
   announcement_type = ndb.StringProperty(default='info', choices=[
       'info', 'warning', 'success', 'danger',
     ])
-  brand_name = ndb.StringProperty(default='Eventus')
+  brand_name = ndb.StringProperty(default='Handitover')
   linkedin_app_id=ndb.StringProperty(default='')
   linkedin_app_secret=ndb.StringProperty(default='')
   googleplus_app_id=ndb.StringProperty(default='')
@@ -153,7 +153,7 @@ class PostBox(Base,  modelx.PostBoxX):
   """
   postby = ndb.KeyProperty(kind='User')
   postUrl = ndb.StringProperty(required=True)
-  safetowork = ndb.StringProperty(required=True)
+  safeToWork = ndb.StringProperty()
   about = ndb.StringProperty(required=True)
   tags = ndb.StringProperty()
   comment = ndb.StringProperty()
