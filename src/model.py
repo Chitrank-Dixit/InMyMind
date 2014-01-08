@@ -76,6 +76,7 @@ class Config(Base, modelx.ConfigX):
 # we have allowed user to log in either manually or using social 
 # accounts, we are fetching the picture of the user using gravatar
 class User(Base, modelx.UserX):
+  
   id = ndb.IntegerProperty()
   name = ndb.StringProperty(required=True)
   username = ndb.StringProperty(required=True)
@@ -83,6 +84,7 @@ class User(Base, modelx.UserX):
   about_me = ndb.StringProperty()
   location = ndb.StringProperty()
   email = ndb.StringProperty(default='')
+  #avatar = ndb.StringProperty(str('http://www.gravatar.com/avatar/' + md5(email).hexdigest() + '?d=mm&s=' + str(size)))
   password = ndb.StringProperty(default='')
   confirm = ndb.StringProperty(default='')
 
@@ -111,6 +113,8 @@ class User(Base, modelx.UserX):
 
   def avatar(self, size):
     return 'http://www.gravatar.com/avatar/' + md5(self.email).hexdigest() + '?d=mm&s=' + str(size)
+
+
 
   def ent_key(self):
     return self.user_db.key.urlsafe()
@@ -142,6 +146,19 @@ class SendMessage(Base, modelx.SentX):
   sent_to = ndb.KeyProperty(kind='User')
   sent_to_id = ndb.KeyProperty(kind='User')
 
+
+class PostBox(Base,  modelx.PostBoxX):
+  """
+    The regular post that we do similar to stumbleupon and reditt
+  """
+  postby = ndb.KeyProperty(kind='User')
+  postUrl = ndb.StringProperty(required=True)
+  safetowork = ndb.StringProperty(required=True)
+  about = ndb.StringProperty(required=True)
+  tags = ndb.StringProperty()
+  comment = ndb.StringProperty()
+  language = ndb.StringProperty(required=True)
+  credits = ndb.IntegerProperty()
 
 # Event Table would contain the Specified Event Information, like creator name and id
 # Event url , venue , start and end date, type of event , if Team Event Team size and No of Teams

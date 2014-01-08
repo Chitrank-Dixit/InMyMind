@@ -44,7 +44,14 @@ class SigninForm(wtf.Form):
     name = wtf.TextField('Name',validators=[validators.Required()])
     password = wtf.PasswordField('Password',validators=[validators.Required()])
     remember_me = wtf.BooleanField('remember_me', default = False)
+
     
+class PostBoxForm(wtf.Form):
+    posturl = wtf.html5.URLField('posturl')
+    about = wtf.SelectField('about', choices=[('',''),('','')],validators=[validators.Required()] )
+    tags = wtf.TextField('tags')
+    comment = wtf.TextAreaField('comment', default='')
+    language  = wtf.SelectField('language', choices=[('',''),('','')],validators=[validators.Required()])
 
 
 class CreateEventForm(wtf.Form):

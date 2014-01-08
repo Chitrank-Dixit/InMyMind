@@ -26,7 +26,7 @@ class UserX(object):
   def get_master_db(cls):
     return cls.get_or_insert('master')
     
-  def avatar_url(self):
+  def avatar_url(self, email):
     return 'http://www.gravatar.com/avatar/%s?d=identicon&r=x' % (
         md5.new(self.email or self.name).hexdigest().lower()
       )
@@ -51,6 +51,12 @@ class SentX(object):
 
   def get_master_db(cls):
     return cls.get_or_insert('master')
+
+class PostBoxX(object):
+  @classmethod
+  def get_master_db(cls):
+      return cls.get_or_insert('master')
+
 
 
 class EventX(object):

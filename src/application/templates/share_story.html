@@ -1,0 +1,407 @@
+{% extends 'base.html' %}
+{% import 'macro/error.html' as forms %}
+{% block title %} Share a Story | Handitover {% endblock %}
+{% block style_block %}
+  <link href="{{ url_for('static', filename='bootstrap/css/bootstrap-select.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='bootstrap/css/bootstrap-wysihtml5.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='bootstrap/css/bootstrap-switch.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='bootstrap/css/bootstrap-tags.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='bootstrap/css/datepicker.css') }}" rel="stylesheet">
+  <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-22043294-2', 'gcdc2013-eventus.appspot.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!-- End Google Analytics -->
+
+
+  <style type="text/css">
+    .background {
+       background-color: #F3F3F3;
+      }
+    p.error {
+        color: red;
+    }
+    .fileButton {
+
+        position:absolute;
+        z-index:2;
+        top:0;
+        left:0;
+        filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+        opacity:0;background-color:transparent;
+        color:transparent;
+    }
+
+    .venue-form {
+        background-color: #f9faf7;
+        webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        -webkit-box-shadow: 0 1px 2px 1px rgba(0,0,0,0.25);
+        box-shadow: 0 1px 2px 1px rgba(0,0,0,0.25);
+        border-radius: 1px;
+        -webkit-border-radius: 1px;
+        padding: 30px 20px 48px 30px;
+        width: 100%;
+        height: 100%;       
+
+
+    }
+
+
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- outer most span12 -->
+    <div class="span12">
+        
+
+        <div class="row">
+            <div class="span12" id = "title">
+                    
+                
+                
+            </div>
+            <!-- id= title  end here-->
+
+        </div>
+    </div>
+        <div class="span2"></div>
+
+        <form action="{{ url_for('share_a_post') }}" class="navbar-form form-inline" method="post" id="share_postform">
+        <!-- mainForm details information here  -->
+        <div class="span8" id = "mainForm">
+            
+            {{ form.csrf_token }}
+            <fieldset>
+                {{ form.hidden_tag() }}
+
+                
+                <div class="control-group">
+                    <!-- Post Name -->
+                    <div class="controls" >
+                        <label class="span2"> <h5>Post URL <font color="#C43F2C">*</font></h5> </label>
+                        {{ form.posturl(id='posturl', class='form-control required span4', placeholder="your post url", autocomplete=True)}}
+                        {% if form.posturl.errors %}
+                        <ul class="errors">
+                            {% for error in form.posturl.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    
+                        
+                    <!-- Post name div end below-->
+                    </div>
+                <!-- Post name control-group end below -->    
+                </div><br>
+                
+                <div class="control-group">
+                    <!-- Post Name -->
+                    <div class="controls" >
+                        <label class="span2"> <h5>Is it Safe to Share <font color="#C43F2C">*</font></h5> </label>
+                        <input type="radio" name="safe" value="yes"/> Yes  
+                        <input type="radio" name="safe" value="no"/>  No (it contains nudity or adult content)
+                        
+                    <!-- Post name div end below-->
+                    </div>
+                <!-- Post name control-group end below -->    
+                </div><br>
+
+                <div class="control-group">
+                    <!-- Post Name -->
+                    <div class="controls" >
+                        <label class="span2"> <h5>What it is About ? <font color="#C43F2C">*</font></h5> </label>
+                        {{ form.about(id='about', class='form-control required span4 selectpicker', placeholder="your post url",  autocomplete=True, **{ 'data-live-search':'true' })}}
+                        {% if form.about.errors %}
+                        <ul class="errors">
+                            {% for error in form.about.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    
+                        
+                    <!-- Post name div end below-->
+                    </div>
+                <!-- Post name control-group end below -->    
+                </div><br><br>
+
+                
+
+                <div class="control-group">
+                    <!-- Post Name -->
+                    <div class="controls" >
+                        <label class="span2"> <h5>Comment <font size="1" color="#C43F2C">(optional)</font></h5> </label>
+                        {{ form.comment(id='comment', class='form-control required span4', placeholder="your comment",  autocomplete=True)}}
+                        {% if form.comment.errors %}
+                        <ul class="errors">
+                            {% for error in form.comment.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    
+                        
+                    <!-- Post name div end below-->
+                    </div>
+                <!-- Post name control-group end below -->    
+                </div><br>
+
+                <div class="control-group">
+                    <!-- Post Name -->
+                    <div class="controls" >
+                        <label class="span2"> <h5>Language <font color="#C43F2C">*</font></h5> </label>
+                        {{ form.language(id='language', class='form-control required span4 selectpicker', placeholder="your post url", autocomplete=True, **{ 'data-live-search':'true' })}}
+                        {% if form.language.errors %}
+                        <ul class="errors">
+                            {% for error in form.language.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    
+                        
+                    <!-- Post name div end below-->
+                    </div>
+                <!-- Post name control-group end below -->    
+                </div><br>
+
+                <div class="control-group">
+                    <!-- Post Name -->
+                    <div class="controls" >
+                        <label class="span2"> <h5>Tags <font size="1" color="#C43F2C">(optional)</font></h5> </label></h5> </label>
+                        {{ form.tags(id='tags', class='form-control required span4 ', placeholder="your post url", autocomplete=True)}}
+                        {% if form.tags.errors %}
+                        <ul class="errors">
+                            {% for error in form.tags.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    
+                        
+                    <!-- Post name div end below-->
+                    </div>
+                <!-- Post name control-group end below -->    
+                </div><br><br>
+
+                <!-- Share a post button -->
+                <div class="form-actions">
+
+                        <div class="controls ">
+                            <center>
+                            <button type="submit" id="post_submit" value"share_post" class="btn btn-success" data-loading-text="adding event..." >Share Post</button><br><br>
+                            </center>
+                        </div>
+                </div>
+
+
+
+            </fieldset>
+
+
+
+            
+
+
+        <!-- mainForm ends below-->
+        </div>
+
+        
+
+        
+
+    </form>
+    <!-- outer most span12 ends below -->    
+    <div class="span2"></div>
+    </div>
+<!-- container ends below -->
+</div>
+
+
+{% block tail_script %}
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap-buttons.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/jquery.validate.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/additional-methods.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap-select.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap-switch.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap-datepicker.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap-typeahead.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap-fileupload.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap-tags.js') }}"></script>
+
+
+<script type="text/javascript">
+ $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+ // This is a simple *viewmodel* - JavaScript that defines the data and behavior of your UI
+
+// Enabling Select Picker custom select fields from Bootstrap
+
+$('#about').selectpicker();
+
+$('#language').selectpicker();
+
+$(function(){
+            Tags.bootstrapVersion = "2";
+            $("#small").tags({
+              tagSize: "sm",
+              suggestions: ["alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel", "india"],
+              tagData: ["juliett", "kilo"]
+            });
+            $("#large").tags({
+              tagSize: "lg",
+              suggestions: ["alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel", "india"],
+              tagData: ["juliett", "kilo"]
+            });
+            $("#medium").tags({
+              suggestions: ["alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel", "india"],
+              tagData: ["juliett", "kilo"]
+            });
+            $("#readOnly").tags({
+              readOnly: true,
+              tagData: ["juliett", "kilo"]
+            });
+});
+
+/* datepicker validation here from  "" http://www.eyecon.ro/bootstrap-datepicker/ ""  */
+
+/* start/initiate the date picker using jquery command 
+" $('id/classOfElement').datepicker() ; " */
+var nowTemp = new Date();
+var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+ 
+var checkin = $('#start_date').datepicker({
+  onRender: function(date) {
+    return date.valueOf() < now.valueOf() ? 'disabled' : '';
+  }
+}).on('changeDate', function(ev) {
+  if (ev.date.valueOf() > checkout.date.valueOf()) {
+    var newDate = new Date(ev.date)
+    newDate.setDate(newDate.getDate() + 1);
+    checkout.setValue(newDate);
+  }
+  checkin.hide();
+  $('#end_date')[0].focus();
+}).data('datepicker');
+var checkout = $('#end_date').datepicker({
+  onRender: function(date) {
+    return date.valueOf() <= checkin.date.valueOf() ? 'disabled' : '';
+  }
+}).on('changeDate', function(ev) {
+  checkout.hide();
+}).data('datepicker');
+
+/* date picker validation ends*/
+
+$(document).ready(function () {
+
+
+$('.dpkr').datepicker(); 
+
+
+$('#share_postform').validate({
+    rules: {
+        
+        
+    },
+    highlight: function (element) {
+        $(element).parent().css('border-color','red');
+        $(element).text('Please type some post').closest('.control-group').removeClass('success').addClass('error');
+        
+    },
+    success: function (element) {
+        element.text('').addClass('valid')
+            .closest('.control-group').removeClass('error').addClass('success');
+    }
+
+    
+});
+
+/*$('#event_submit')
+    .click(function () {
+        var btn = $(this)
+        btn.button('loading')
+        setTimeout(function () {
+            btn.button('reset')
+        }, 5000)
+    });*/
+
+
+    
+
+});
+
+function AppViewModel(googleplusURL1, facebookURL1, twitterURL1) {
+    this.eventType = ko.observable();
+    this.nTeams = ko.computed(function(){
+        return this.eventType() == 'Team Event';
+
+    }, this);
+       
+    this.googleplusURL = ko.observable(googleplusURL1);
+    this.facebookURL = ko.observable(facebookURL1);
+    this.twitterURL = ko.observable(twitterURL1);
+    this.demoText =  ko.observable("EDIT THE BELOW DEMO TEXT AS YOU WISH(500 CHARACTERS ONLY)                                                  . Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut lacinia euismod elit ut laoreet. Cras ut molestie diam, ut viverra eros. Maecenas et massa ut quam venenatis hendrerit nec accumsan quam.venenatis hendrerit nec accumsan quam. Etiam vel tortor gravida, euismod felis a, pellentesque lectus. Suspendisse potenti. Ut aliquam purus a erat congue rhoncus. Pellentesque at aliquet nisl");
+
+
+    
+
+    
+ 
+
+
+
+
+    
+}
+
+// Activates knockout.js
+ko.applyBindings(new AppViewModel( "https://plus.google.com/u/0/events/", "https://www.facebook.com/events/", "https://www.twitter.com/"));
+
+/*
+var FormHelpers = {
+            validate: function (form, evt) {
+                // Form validation for modal dialog
+                var postbody = form.find('#body').val();
+                
+                if (!(postbody)) {
+                    evt.preventDefault();
+                    Utils.renderFieldErrorTooltip('#body', 'Name is required', 'right');
+                }
+                
+            },
+            init: function () {
+                var self = this;
+                var example_form = $('#new_postform');
+                example_form.on('submit', function (evt) {
+                    self.validate(example_form, evt)
+                });
+            }
+        };
+        $(document).ready(function() {
+            FormHelpers.init();
+        });
+
+
+
+*/
+
+
+
+
+
+</script>
+
+{% endblock %}
+
+
+{% endblock %}

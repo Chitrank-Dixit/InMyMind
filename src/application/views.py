@@ -63,7 +63,7 @@ from flaskext import oauth
 import util
 import model
 import config
-from forms import SignupForm, SigninForm, CreateEventForm , CreatePost , MessageForm, CommentForm, TeamRegisterForm, InviteUserForm, UserSettingsForm
+from forms import SignupForm, SigninForm, CreateEventForm , CreatePost , MessageForm, CommentForm, TeamRegisterForm, InviteUserForm, UserSettingsForm, PostBoxForm
 # Google API python Oauth 2.0
 import httplib2
 
@@ -769,6 +769,39 @@ def crop_youtube_url(url):
     else :
       break
   return code
+
+#################################################################
+# Share a post
+#
+#
+#################################################################
+
+@app.route('/share_post/', methods=['POST','GET'])
+@login_required
+def share_a_post():
+  """
+
+  """
+  form = PostBoxForm(request.form)
+
+  use_db = ndb.Key(model.User, current_user.name)
+  id_db = ndb.Key(model.User, current_user.id)
+  print use_db, id_db.integer_id()
+  if request.method == 'POST':
+    tags = request.args['small']
+    print tags
+    post = PostBox(
+      postby = id_db,
+      posturl = form.posturl.data ,
+      safetowork = request.args['safe'],
+      about = form.about.data,
+      comments = form.comment.data , 
+      language = form.language.data,
+      tags = request.args['small']
+      )
+  return render_template('share_story.html', form= form)
+
+
 
 #################################################################
 # Create an Event
