@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+<html xmlns:fb="http://ogp.me/ns/fb#">
+{% block title %} Event Profile | Eventus {% endblock %}
+
+{% block style_block %}
+  <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-22043294-3', 'alien-device-451.appspot.com');
+      ga('send', 'pageview');
+
+    </script>
+    <!-- End Google Analytics -->
+	
+	<style type="text/css">
+		.background {
+			 background-color: #F3F3F3;
+			}
+	    .modal {
+        /* new custom width */
+            width: 700px;
+            margin-left: -375px;
+         
+		}
+		.eventName{
+		  /* line-height to vertically center: http://phrogz.net/css/vertical-align/index.html */
+		  height: 40px;
+		  line-height: 40px;
+		}
+
+
+		.navigation, .pitch, .section1, .section2, .faq, .footer {
+        padding: 10px 0px 10px 0px;
+      }
+      .video, .eventLogo, .eventName, .social {
+        /*border: 1px dotted;*/
+        text-align: left;
+      }
+      .video {
+        /* Internal beventNames have 1px width, thus need to add 4 x 1px to 120px. */
+        height: 230px;
+        line-height: 124px;
+      }
+      .eventLogo, .eventName, .social {
+        /* line-height to vertically center: http://phrogz.net/css/vertical-align/index.html */
+        height: 115px;
+        line-height: 40px;
+      }
+      .eventContent {
+      	height:auto;
+      }
+      .teamPic {
+      	border-radius: 100%;  	
+      	width: 60px;
+      }
+
+      .event-page-canvas {
+
+      	webkit-box-sizing: border-box;
+      	box-sizing: border-box;
+      	-webkit-box-shadow: 0 1px 2px 1px rgba(0,0,0,0.25);
+      	box-shadow: 0 1px 2px 1px rgba(0,0,0,0.25);;
+      	background-color:#f9faf7; 
+      	border-radius: 1px;
+      	-webkit-border-radius: 1px;
+      	padding: 30px 20px 48px 30px;
+      	width: 100%;
+      	height: 100%;
+
+
+      }
+
+	</style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/data_page.css') }}" /> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/data_table.css') }}" /> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/shCore.css') }}" /> 
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="row">
+  <div class="span12">
+      <div class="span6">
+        <h3><i class="icon-comments"></i> Comments</h3> 
+        <form id="comment_form" class="navbar-form form-inline"  data-bind="submit: addComment" method="post">
+        {{ form.csrf_token }}
+        <fieldset>
+          {{ form.hidden_tag() }}
+          <div class="control-group">
+                    <p>{{ form.comment.label }}</p>
+                      <div class="controls">
+
+                            <p>
+                            {{ form.comment(id='comment',class='form-horizontal full-width required ',placeholder="Please post your Comment Here", style="width: 500px;", autocomplete=True, **{'data-bind': 'value:  comment', 'data-required' : 'true' })}}</p>
+                            {% if form.comment.errors %}
+                            <ul class="errors">
+                                {% for error in form.comment.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                          
+                        </div>
+
+                        
+                </div>
+                <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" id="post_comment" value="post_comment" class="btn btn-success" data-loading-text="Commenting...." >Add Comment</button><br><br>
+                        
+                        </div>
+                </div>
+
+        </fieldset>
+
+        </form>
+
+      <ul data-bind="foreach: comments, visible: comments().length > 0">
+            <div class="well-inverse time-stamp">
+                <!-- data-bind="attr: { href: commentBy , name: name , uid: uid }" -->
+
+                <p data-bind="text: comment"></p>
+                <a data-bind="attr:{ href:  '/user/' + name() + '/' + uid() + '/' }"><p data-bind="text: cname"></p></a>
+
+                
+                
+            </div>
+
+        </ul>
+        
+        
+
+        
+      
+        
+
+      <!-- span6 of comments ended -->
+      </div>
+
+
+
+    <!-- span12 class end -->
+  </div>
+
+<!-- row class end -->
+</div>
+
+
+<!-- fullEventPage  div end-->
+</div>
+
+
+{% block tail_script %}
+
+
+<script src="{{ url_for('static', filename = 'bootstrap/js/mockjax.js') }}"></script>
+
+<script src="{{ url_for('static', filename = 'bootstrap/js/bootstrap-typeahead.js') }}"></script>
+<script src="{{ url_for('static', filename = 'bootstrap/js/demo.js') }}"></script>
+<script src="{{ url_for('static', filename = 'bootstrap/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static', filename = 'bootstrap/js/shCore.js') }}"></script>
+
+
+<script type="text/javascript">
+$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+// bootstrap editable inline mode
+
+
+$(document).ready(function () {
+    $('#inviteUser').dataTable();
+
+    $('#post_comment')
+    .click(function () {
+        var btn = $(this)
+        btn.button('loading')
+        setTimeout(function () {
+            btn.button('reset')
+        }, 300)
+    });
+    
+    $("#invite_to").typeahead({
+    source: function (query, process) {
+               
+        return $.getJSON($SCRIPT_ROOT + "{{ url_for('get_all_users') }}", { query: query },function (data) {
+                    console.log(data);
+                    return process(data);
+          });
+        // This is going to make an HTTP post request to the controller
+        
+    },
+
+
+    
+});
+
+
+    
+    
+    
+
+});
+
+
+
+
+
+// Knockoutjs Comment Code
+
+function Comment(data) {
+    this.comment = ko.observable(data.comment);
+    this.name = ko.observable(data.name);
+    this.uid = ko.observable(data.uid);
+   
+    this.cname = this.name();
+    this.cid = this.uid();
+    this.commentBy = ko.observable('profile.html')
+    this.getName = ko.computed(function() {
+        return this.name();
+    }, this);
+
+    this.getUid = ko.computed(function() {
+        return this.uid();
+    }, this);
+    
+}
+
+function Invite(data) {
+    this.uname = ko.observable(data.uname);
+    this.uuid = ko.observable(data.uuid);
+    this.about_me = ko.observable(data.about_me);
+    this.email = ko.observable(data.email);
+    
+    
+}
+
+function AddInvite(data) {
+    this.inviteName = ko.observable(data.inviteName);
+    this.inviteId = ko.observable(data.inviteId);
+    this.inviteAbout_me = ko.observable(data.inviteAbout_me);
+    this.inviteEmail = ko.observable(data.inviteEmail);
+    
+    
+}
+
+function CommentViewModel() {
+    var self = this;
+    self.users = ko.observableArray([]);
+    self.userInfo = ko.observableArray([]);
+    self.invites = ko.observableArray([]);
+    self.comments = ko.observableArray([]);
+    self.comment = ko.observable();
+    self.allSelected= ko.observable(false);
+    
+    
+    self.selectAll = function() {
+        var all = self.allSelected();
+        ko.utils.arrayForEach(self.users(), function(user) {
+           user.isSelected(!all); 
+        });
+        return true;
+    }       
+    
+    self.inviteUser = function() {
+        self.invites.push(new AddInvite({ title: this.newTaskText() }));
+               
+        
+    };
+       
+    self.addComment = function() {
+        if ( self.comment() != ""){
+            self.save();
+        }
+        self.comment("");
+        
+        
+    };
+
+    $.getJSON("{{ url_for('all_post_comments', postid=postid ) }}", function(commentModels) {
+        var t = $.map(commentModels.comments, function(item) {
+            return new Comment(item);
+
+        });
+        self.comments(t);
+
+    });
+
+    $.getJSON('/users', function(invitationModels) {
+        var t = $.map(invitationModels.users, function(item) {
+            console.log("Something",item);
+            return new Invite(item);
+        });
+        self.users(t);
+    });
+
+    
+
+    self.save = function() {
+        return $.ajax({
+            url: "{{ url_for('post_page', postname = postname , postid = postid ) }}",
+            contentType: 'application/json',
+            type: 'POST',
+            data: JSON.stringify({
+                'comment': self.comment(),
+                'name' : "{{current_user.name}}",
+                'uid' : "{{current_user.id}}",
+
+            }),
+
+
+            success: function(data) {
+                console.log("Pushing to comment array");
+                self.comments.push(new Comment({ comment: data.comment, name: data.name, uid: data.uid }));
+                return;
+            },
+            error: function() {
+              console.log(ename);
+                return console.log("Failed");
+            }
+        });
+    };
+}
+
+
+
+// enable validation
+// ko.validation.init();
+
+// Activates knockout.js
+ko.applyBindings(new CommentViewModel());
+
+
+
+
+</script>
+{% endblock %}
+
+{% endblock %}

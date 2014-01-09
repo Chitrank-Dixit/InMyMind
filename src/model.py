@@ -151,7 +151,9 @@ class PostBox(Base,  modelx.PostBoxX):
   """
     The regular post that we do similar to stumbleupon and reditt
   """
-  postby = ndb.KeyProperty(kind='User')
+  postbyname = ndb.KeyProperty(kind='User')
+  postbyid = ndb.KeyProperty(kind='User')
+  postname = ndb.StringProperty(required=True)
   postUrl = ndb.StringProperty(required=True)
   safeToWork = ndb.StringProperty()
   about = ndb.StringProperty(required=True)
@@ -159,6 +161,14 @@ class PostBox(Base,  modelx.PostBoxX):
   comment = ndb.StringProperty()
   language = ndb.StringProperty(required=True)
   credits = ndb.IntegerProperty()
+
+# comment on the posts
+class PostComments(Base, modelx.PostBoxX):
+    name = ndb.KeyProperty(kind="User", required=True)
+    user_id = ndb.KeyProperty(kind="User", required=True)
+    post_id = ndb.KeyProperty(kind="PostBox", required=True)
+    post_name = ndb.KeyProperty(kind="PostBox", required=True)
+    comment = ndb.StringProperty(required=True)
 
 # Event Table would contain the Specified Event Information, like creator name and id
 # Event url , venue , start and end date, type of event , if Team Event Team size and No of Teams

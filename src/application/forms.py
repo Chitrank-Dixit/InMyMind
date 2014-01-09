@@ -57,6 +57,7 @@ class SigninForm(wtf.Form):
     
 class PostBoxForm(wtf.Form):
     global aboutlist, languagelist
+    postname = wtf.TextField('postname', validators=[validators.Required()])
     posturl = wtf.html5.URLField('posturl')
     about = wtf.SelectField('about', choices=aboutlist,validators=[validators.Required()] )
     tags = wtf.TextField('tags')

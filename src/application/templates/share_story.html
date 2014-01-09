@@ -14,7 +14,7 @@
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-      ga('create', 'UA-22043294-2', 'gcdc2013-eventus.appspot.com');
+      ga('create', 'UA-22043294-3', 'alien-device-451.appspot.com');
       ga('send', 'pageview');
 
     </script>
@@ -84,6 +84,24 @@
             <fieldset>
                 {{ form.hidden_tag() }}
 
+                <div class="control-group">
+                    <!-- Post Name -->
+                    <div class="controls" >
+                        <label class="span2"> <h5>Subject <font color="#C43F2C">*</font></h5> </label>
+                        {{ form.postname(id='postname', class='form-control required span4', placeholder="Subject of your post", autocomplete=True)}}
+                        {% if form.postname.errors %}
+                        <ul class="errors">
+                            {% for error in form.postname.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    
+                        
+                    <!-- Post name div end below-->
+                    </div>
+                <!-- Post name control-group end below -->    
+                </div><br>
                 
                 <div class="control-group">
                     <!-- Post Name -->

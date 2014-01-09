@@ -786,7 +786,9 @@ def share_a_post():
   if request.method=='POST':
     print "hii"
     sharepost = model.PostBox(
-      postby = id_db,
+      postbyname = use_db,
+      postbyid = id_db,
+      postname = form.postname.data,
       postUrl = form.posturl.data ,
       safeToWork = request.form['safe'],
       about = form.about.data,
@@ -802,6 +804,76 @@ def share_a_post():
     except CapabilityDisabledError:
       flash('Something went wrong and your comment has not been posted', category='danger')
   return render_template('share_story.html', form= form)
+
+@app.route('/shared/<postname>/<int:postid>',methods=['POST','GET'])
+@login_required
+def post_page(postname, postid):
+  """
+  """
+  post_id = ndb.Key(model.PostBox, postid)
+  post_name = ndb.Key(model.PostBox, postname)
+    
+  # events = model.Event.query(model.Event.name == ename, model.Event.creator_id == eid)
+  # comments_store = model.EventComments.query(model.EventComments.event_id == event_id)
+  
+  user_id = ndb.Key(model.User, current_user.id)
+  name = ndb.Key(model.User, current_user.name)
+
+  # if comments been posted
+  comment_json = request.json
+  # print "Here is the list",events.name
+  # if user been invited
+  invite_json = request.json
+  
+  
+  # send all the Teams of an Event
+  
+  form = CommentForm(request.form)
+  # print request.json, type(comment_json)
+  if request.method == 'POST' and comment_json:
+    print request.json
+    
+    comments = model.PostComments(
+        name = name,
+        user_id = user_id,
+        post_id = post_id,
+        post_name = post_name,
+        comment = request.json['comment'],
+      )
+    try:
+      comments.put()
+      # flash('your comment has been posted', category='info')
+      # mail.send(msg)
+      # print name.string_id() , user_id.integer_id() , event_id
+      return jsonify({ "name": name.string_id(),"uid": user_id.integer_id(), "post_id": post_id.integer_id(), "comment": request.json['comment'] })
+    except CapabilityDisabledError:
+      flash('Something went wrong and your comment has not been posted', category='danger')
+      
+  
+  return render_template('post_profile.html', postname =postname , postid= postid , form= form)
+
+@app.route('/comments/<int:postid>',methods=['GET'])
+@login_required
+def all_post_comments(postid):
+  post_id = ndb.Key(model.PostBox, postid)
+  comments_store = model.PostComments.query(model.PostComments.post_id == post_id)
+  first = {}; comments = []
+  for comment in comments_store:
+    first['name'] = comment.name.string_id()
+    first['uid'] = comment.user_id.integer_id()
+    first['post_id'] = comment.post_id.integer_id()
+    first['comment'] = comment.comment
+    comments.append(first)
+    first = {}
+  return jsonify(comments=comments)
+
+
+
+
+@app.route('/shared', methods=['GET','POST'])
+def shared_posts():
+  sharedposts= model.PostBox.query()
+  return render_template('shared_posts.html', sharedposts=sharedposts)
 
 
 
