@@ -36,8 +36,8 @@ DEBUG_TB_INTERCEPT_REDIRECTS = False
 CACHE_TYPE = 'gaememcached'
 
 # google settings file
-GOOGLE_API_CLIENT_ID = '1075048200759-5hunu03e087bha87d48874veh1rvr97f.apps.googleusercontent.com'
-GOOGLE_API_CLIENT_SECRET = 'SFxHRvAvD_w9JzfUhI8EiJrS'
+GOOGLE_API_CLIENT_ID = '987638626090-2kanvsb99o2ij8j3vsvsebh7bul7tddr.apps.googleusercontent.com'
+GOOGLE_API_CLIENT_SECRET = '4LkkuvOFHPCN2ziu58soAHQW'
 GOOGLE_API_SCOPE = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
 GOOGLE_OAUTH2_URL = 'https://accounts.google.com/o/oauth2/'
 GOOGLE_API_URL = 'https://www.googleapis.com/oauth2/v1/'
@@ -46,8 +46,8 @@ GOOGLE_API_URL = 'https://www.googleapis.com/oauth2/v1/'
 # recaptch made using Google 
 # https://www.google.com/recaptcha/admin/site?siteid=317209387
 RECAPTCHA_USE_SSL = True
-RECAPTCHA_PUBLIC_KEY = '6Ld5ZOgSAAAAACeDZoMNS707cmaraBEVJd2PFMTj'
-RECAPTCHA_PRIVATE_KEY = '6Ld5ZOgSAAAAAFLTuAJSwMOCJ5aZ_IpoMrGvTRXG'
+RECAPTCHA_PUBLIC_KEY = '6Lccy-wSAAAAAHTPQJUvMpbqwhdwpN_M04Yg-UFp'
+RECAPTCHA_PRIVATE_KEY = '6Lccy-wSAAAAAKCm7FnAQBelmguZqtG9zrN7V990'
 # RECAPTCHA_OPTIONS = 
 
 # flask-mail settings
