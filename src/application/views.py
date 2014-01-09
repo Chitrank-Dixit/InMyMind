@@ -58,7 +58,7 @@ from flaskext.login import login_url, logout_user , current_user, login_required
 from flaskext import oauth
 
 
-
+from hashlib import md5
 
 import util
 import model
@@ -178,12 +178,13 @@ def signup():
           if user_db.name == form.name.data:
             flash('Username already taken', category='warning')
             return redirect(url_for('signup'))
-        
+        avatar = 'http://www.gravatar.com/avatar/' + md5(form.email.data).hexdigest() + '?d=mm&s=' + str(80)
         signup = model.User(
             name = form.name.data,
             username = form.name.data,
             email = form.email.data,
             password = form.password.data,
+            #avatar = avatar
              
         )
         #session['remember_me'] = form.remeber_me.data
@@ -362,7 +363,7 @@ def follow_user(name,uid):
   follower_name = ndb.Key(model.User, current_user.name)
   followed_name = ndb.Key(model.User, user.name)
   follower_avatar = ndb.Key(model.User, current_user.avatar(80))
-  followed_avatar = ndb.Key(model.User, user.avatar(90))
+  followed_avatar = ndb.Key(model.User, user.avatar(80))
   follow = model.Followers(
     follower_name = follower_name,
     follower_id = current_user.id, 
@@ -456,7 +457,7 @@ class admin(flask.views.MethodView):
 ################################################################################
 
 
-GOOGLE_CLIENT_ID = '987638626090.apps.googleusercontent.com'
+GOOGLE_CLIENT_ID = '987638626090-2kanvsb99o2ij8j3vsvsebh7bul7tddr.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = '4LkkuvOFHPCN2ziu58soAHQW'
 REDIRECT_URI = 'http://localhost:8080/oauth-authorized/'  # one of the Redirect URIs from Google APIs console
 
@@ -799,8 +800,10 @@ def share_a_post():
       )
     try:
       sharedpost = sharepost.put()
-      time.sleep(4)
-      #return redirect(url_for('Team_Profile', ename = ename , eid =  eid, teamName = form.teamName.data, tid= team.integer_id() ))
+      print "records is:------",sharepost
+      postid=sharedpost.integer_id()
+      post_key = ndb.Key(model.Event, postid)
+      return redirect(url_for('post_page', postname = form.postname.data , postid =  postid))
     except CapabilityDisabledError:
       flash('Something went wrong and your comment has not been posted', category='danger')
   return render_template('share_story.html', form= form)

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base2col.html" %}
 <html xmlns:fb="http://ogp.me/ns/fb#">
 {% block title %} Event Profile | Eventus {% endblock %}
 
@@ -15,77 +15,21 @@
 
     </script>
     <!-- End Google Analytics -->
-	
-	<style type="text/css">
-		.background {
-			 background-color: #F3F3F3;
-			}
-	    .modal {
-        /* new custom width */
-            width: 700px;
-            margin-left: -375px;
-         
-		}
-		.eventName{
-		  /* line-height to vertically center: http://phrogz.net/css/vertical-align/index.html */
-		  height: 40px;
-		  line-height: 40px;
-		}
-
-
-		.navigation, .pitch, .section1, .section2, .faq, .footer {
-        padding: 10px 0px 10px 0px;
-      }
-      .video, .eventLogo, .eventName, .social {
-        /*border: 1px dotted;*/
-        text-align: left;
-      }
-      .video {
-        /* Internal beventNames have 1px width, thus need to add 4 x 1px to 120px. */
-        height: 230px;
-        line-height: 124px;
-      }
-      .eventLogo, .eventName, .social {
-        /* line-height to vertically center: http://phrogz.net/css/vertical-align/index.html */
-        height: 115px;
-        line-height: 40px;
-      }
-      .eventContent {
-      	height:auto;
-      }
-      .teamPic {
-      	border-radius: 100%;  	
-      	width: 60px;
-      }
-
-      .event-page-canvas {
-
-      	webkit-box-sizing: border-box;
-      	box-sizing: border-box;
-      	-webkit-box-shadow: 0 1px 2px 1px rgba(0,0,0,0.25);
-      	box-shadow: 0 1px 2px 1px rgba(0,0,0,0.25);;
-      	background-color:#f9faf7; 
-      	border-radius: 1px;
-      	-webkit-border-radius: 1px;
-      	padding: 30px 20px 48px 30px;
-      	width: 100%;
-      	height: 100%;
-
-
-      }
-
-	</style>
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/data_page.css') }}" /> 
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/data_table.css') }}" /> 
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/shCore.css') }}" /> 
+		
+    
 {% endblock %}
 
-{% block content %}
+
+{% block side_content %}
+  <p>Hehehe</p>
+{% endblock %}
+
+{% block main_content %}
 
 
 
 <div class="row">
-  <div class="span12">
+  
       <div class="span6">
         <h3><i class="icon-comments"></i> Comments</h3> 
         <form id="comment_form" class="navbar-form form-inline"  data-bind="submit: addComment" method="post">
@@ -97,7 +41,7 @@
                       <div class="controls">
 
                             <p>
-                            {{ form.comment(id='comment',class='form-horizontal full-width required ',placeholder="Please post your Comment Here", style="width: 500px;", autocomplete=True, **{'data-bind': 'value:  comment', 'data-required' : 'true' })}}</p>
+                            {{ form.comment(id='comment',class='form-horizontal full-width required span6',placeholder="Please post your Comment Here", style="width: 500px;", autocomplete=True, **{'data-bind': 'value:  comment', 'data-required' : 'true' })}}</p>
                             {% if form.comment.errors %}
                             <ul class="errors">
                                 {% for error in form.comment.errors %}
@@ -125,8 +69,9 @@
             <div class="well-inverse time-stamp">
                 <!-- data-bind="attr: { href: commentBy , name: name , uid: uid }" -->
 
-                <p data-bind="text: comment"></p>
-                <a data-bind="attr:{ href:  '/user/' + name() + '/' + uid() + '/' }"><p data-bind="text: cname"></p></a>
+                <p data-bind="text: comment"></p><br>
+                <!-- <img class="pull-left" data-bind="attr:{src: avatar}" /> -->
+                <a class="pull-left" data-bind="attr:{ href:  '/user/' + name() + '/' + uid() + '/' }"><p data-bind="text: cname"></p></a>
 
                 
                 
@@ -145,15 +90,15 @@
 
 
 
-    <!-- span12 class end -->
-  </div>
-
+   
 <!-- row class end -->
 </div>
 
 
 <!-- fullEventPage  div end-->
-</div>
+
+
+{% endblock %}
 
 
 {% block tail_script %}
@@ -217,7 +162,7 @@ function Comment(data) {
     this.comment = ko.observable(data.comment);
     this.name = ko.observable(data.name);
     this.uid = ko.observable(data.uid);
-   
+    /*this.avatar = ko.observable(data.avatar);*/
     this.cname = this.name();
     this.cid = this.uid();
     this.commentBy = ko.observable('profile.html')
@@ -310,13 +255,13 @@ function CommentViewModel() {
                 'comment': self.comment(),
                 'name' : "{{current_user.name}}",
                 'uid' : "{{current_user.id}}",
-
+                /*'avatar' : "{{current_user.avatar}}"*/
             }),
 
 
             success: function(data) {
                 console.log("Pushing to comment array");
-                self.comments.push(new Comment({ comment: data.comment, name: data.name, uid: data.uid }));
+                self.comments.push(new Comment({ comment: data.comment, name: data.name, uid: data.uid /*, avatar: data.avatar*/ }));
                 return;
             },
             error: function() {
@@ -341,4 +286,3 @@ ko.applyBindings(new CommentViewModel());
 </script>
 {% endblock %}
 
-{% endblock %}

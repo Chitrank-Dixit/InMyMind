@@ -15,7 +15,7 @@
               <li><a href="{{ url_for('shared_posts') }}"><i class="icon-magnet"></i> Popular Stories</a></li>
               <li><a href="{{ url_for('share_a_post') }}"><i class="icon-cloud-upload"></i> Share a Story</a></li>
               {% if g.user.is_authenticated() %}
-              <li><a href="{{ url_for('user_notifications' , name = g.user.name, uid=g.user.id )}}"><i class="icon-bell-alt"></i> Notifications</a></li>
+              <li><a href="{{ url_for('user_notifications' , name = g.user.name, uid=g.user.id )}}"><i class="icon-bell-alt"></i> Notifications </a></li>
               <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{current_user.avatar(20)}}" class="img-circle">  {{current_user.name}}<b class="caret"></b></a>
                 <ul class="dropdown-menu">

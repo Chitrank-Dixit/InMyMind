@@ -84,7 +84,7 @@ class User(Base, modelx.UserX):
   about_me = ndb.StringProperty()
   location = ndb.StringProperty()
   email = ndb.StringProperty(default='')
-  #avatar = ndb.StringProperty(str('http://www.gravatar.com/avatar/' + md5(email).hexdigest() + '?d=mm&s=' + str(size)))
+  #avatar = ndb.StringProperty(default='')
   password = ndb.StringProperty(default='')
   confirm = ndb.StringProperty(default='')
 
