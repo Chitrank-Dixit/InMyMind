@@ -22,6 +22,7 @@
 
 {% block side_content %}
   <p>Hehehe</p>
+
 {% endblock %}
 
 {% block main_content %}
@@ -30,7 +31,7 @@
 
 <div class="row">
   
-      <div class="span6">
+      <div class="span7">
         <h3><i class="icon-comments"></i> Comments</h3> 
         <form id="comment_form" class="navbar-form form-inline"  data-bind="submit: addComment" method="post">
         {{ form.csrf_token }}
@@ -41,7 +42,7 @@
                       <div class="controls">
 
                             <p>
-                            {{ form.comment(id='comment',class='form-horizontal full-width required span6',placeholder="Please post your Comment Here", style="width: 500px;", autocomplete=True, **{'data-bind': 'value:  comment', 'data-required' : 'true' })}}</p>
+                            {{ form.comment(id='comment',class='form-horizontal full-width required span7',placeholder="Please post your Comment Here", style="width: 500px;", autocomplete=True, **{'data-bind': 'value:  comment', 'data-required' : 'true' })}}</p>
                             {% if form.comment.errors %}
                             <ul class="errors">
                                 {% for error in form.comment.errors %}
@@ -66,16 +67,24 @@
         </form>
 
       <ul data-bind="foreach: comments, visible: comments().length > 0">
-            <div class="well-inverse time-stamp">
+            <div class="well-inverse">
                 <!-- data-bind="attr: { href: commentBy , name: name , uid: uid }" -->
-
-                <p data-bind="text: comment"></p><br>
-                <!-- <img class="pull-left" data-bind="attr:{src: avatar}" /> -->
-                <a class="pull-left" data-bind="attr:{ href:  '/user/' + name() + '/' + uid() + '/' }"><p data-bind="text: cname"></p></a>
-
-                
-                
-            </div>
+                <div class="container-fluid">
+                  <div class="row-fluid">
+                    <div class="span2">
+                      <div class="panel-footer">
+                        <img class="img-circle" data-bind="attr:{src: avatar}" /><br>
+                        <a data-bind="attr:{ href:  '/user/' + name() + '/' + uid() + '/' }"><p data-bind="text: cname"></p></a>
+                      </div>
+                    </div>
+                    <div class="span5">
+                      <div class="panel-body">
+                        <p class="pull-left" data-bind="text: comment"></p><br><br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
         </ul>
         
@@ -162,7 +171,7 @@ function Comment(data) {
     this.comment = ko.observable(data.comment);
     this.name = ko.observable(data.name);
     this.uid = ko.observable(data.uid);
-    /*this.avatar = ko.observable(data.avatar);*/
+    this.avatar = ko.observable(data.avatar);
     this.cname = this.name();
     this.cid = this.uid();
     this.commentBy = ko.observable('profile.html')
@@ -255,13 +264,13 @@ function CommentViewModel() {
                 'comment': self.comment(),
                 'name' : "{{current_user.name}}",
                 'uid' : "{{current_user.id}}",
-                /*'avatar' : "{{current_user.avatar}}"*/
+                'avatar' : "{{current_user.avatar(30)}}"
             }),
 
 
             success: function(data) {
                 console.log("Pushing to comment array");
-                self.comments.push(new Comment({ comment: data.comment, name: data.name, uid: data.uid /*, avatar: data.avatar*/ }));
+                self.comments.push(new Comment({ comment: data.comment, name: data.name, uid: data.uid , avatar: data.avatar }));
                 return;
             },
             error: function() {

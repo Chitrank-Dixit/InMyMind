@@ -835,20 +835,21 @@ def post_page(postname, postid):
   # print request.json, type(comment_json)
   if request.method == 'POST' and comment_json:
     print request.json
-    
+    avatarUrl = ndb.Key(model.User, request.json['avatar'])
     comments = model.PostComments(
         name = name,
         user_id = user_id,
         post_id = post_id,
         post_name = post_name,
         comment = request.json['comment'],
+        avatar = avatarUrl
       )
     try:
       comments.put()
       # flash('your comment has been posted', category='info')
       # mail.send(msg)
       # print name.string_id() , user_id.integer_id() , event_id
-      return jsonify({ "name": name.string_id(),"uid": user_id.integer_id(), "post_id": post_id.integer_id(), "comment": request.json['comment'] })
+      return jsonify({ "name": name.string_id(),"uid": user_id.integer_id(), "post_id": post_id.integer_id(), "comment": request.json['comment'] , "avatar": request.json['avatar'] })
     except CapabilityDisabledError:
       flash('Something went wrong and your comment has not been posted', category='danger')
       
@@ -866,6 +867,7 @@ def all_post_comments(postid):
     first['uid'] = comment.user_id.integer_id()
     first['post_id'] = comment.post_id.integer_id()
     first['comment'] = comment.comment
+    first['avatar'] = comment.avatar.string_id()
     comments.append(first)
     first = {}
   return jsonify(comments=comments)

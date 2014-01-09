@@ -168,6 +168,7 @@ class PostComments(Base, modelx.PostBoxX):
     user_id = ndb.KeyProperty(kind="User", required=True)
     post_id = ndb.KeyProperty(kind="PostBox", required=True)
     post_name = ndb.KeyProperty(kind="PostBox", required=True)
+    avatar = ndb.KeyProperty(kind="User")
     comment = ndb.StringProperty(required=True)
 
 # Event Table would contain the Specified Event Information, like creator name and id
