@@ -860,7 +860,9 @@ def post_page(postname, postid):
 @login_required
 def all_post_comments(postid):
   post_id = ndb.Key(model.PostBox, postid)
-  comments_store = model.PostComments.query(model.PostComments.post_id == post_id)
+  comments = model.PostComments.query(model.PostComments.post_id == post_id)
+  comments = comments.order(model.PostComments.created)
+  comments_store = comments.fetch()
   first = {}; comments = []
   for comment in comments_store:
     first['name'] = comment.name.string_id()
