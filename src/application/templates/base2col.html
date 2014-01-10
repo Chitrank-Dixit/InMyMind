@@ -16,6 +16,13 @@
 
     <!-- Bootstrap theme -->
     <style type="text/css">
+        @font-face {
+        font-family: "Alba";
+        src: url("{{ url_for('static', filename='bootstrap/fonts/ALBAS___.ttf') }}") format("truetype");
+        }
+        a.custom { 
+            font-family: "My Custom Font", Verdana, Tahoma;
+        }
         body { padding-top: 40px; }
         @media screen and (max-width: 768px) {
         body { padding-top: 0px; }

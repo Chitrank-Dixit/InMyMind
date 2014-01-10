@@ -8,9 +8,13 @@
              <span class="icon-bar"></span>
              <span class="icon-bar"></span>
            </button>
-           <a class="brand" href="/"><b><font size="6" face="Times New Roman">Handitover</font></b></a>
+           <a class="brand" href="/">Handitover</a>
            <div class="nav-collapse collapse">
-              
+             <ul class="nav">
+                <form class="navbar-form">
+                  <input type="text" class="span2 input-medium search-query" placeholder="search">
+                </form>
+             </ul>
              <ul class="nav pull-right">
               <li><a href="{{ url_for('shared_posts') }}"><i class="icon-magnet"></i> Popular Stories</a></li>
               <li><a href="{{ url_for('share_a_post') }}"><i class="icon-cloud-upload"></i> Share a Story</a></li>

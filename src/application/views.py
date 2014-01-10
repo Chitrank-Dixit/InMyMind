@@ -845,7 +845,7 @@ def post_page(postname, postid):
         avatar = avatarUrl
       )
     try:
-      comments.put()
+      posted = comments.put()
       # flash('your comment has been posted', category='info')
       # mail.send(msg)
       # print name.string_id() , user_id.integer_id() , event_id
