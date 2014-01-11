@@ -1,5 +1,5 @@
-<title>Handitover | Trusted Sharing</title>
 {% extends "base.html" %}
+{% block title %} Handitover | Trusted Sharing {% endblock %}
 {% block style_block %}
   <!-- Google Analytics -->
    <script>
@@ -13,15 +13,19 @@
 
      </script>
     <!-- End Google Analytics -->
-  <link href="{{ url_for('static', filename='font-awesome/css/font-awesome.css') }}" rel="stylesheet">
- <link href="{{ url_for('static', filename='bootstrap/css/stylish-portfolio.css') }}" rel="stylesheet">
-
   <style type="text/css">
+    .background {
+       background-color: #F3F3F3;
+      }
 
-  .indexbg {
-    background-color: #C62D2D ;
-  }
+    .outer {
+       border-width: 2px solid;
+    }
+  
   </style>
+ 
+
+  
 {% endblock %}
 
 {% block content %}	    
