@@ -67,7 +67,7 @@
 		</ul>
 		<div class="tab-content">
 		<div class="tab-pane active" id="posts">
-      {% if not results %}
+      {% if not sharedposts %}
         
             {% if g.user.id == euid %}
             <div class="alert alert-info">
@@ -83,15 +83,15 @@
 
       {% else %}
       
-      {% for event_list in results %}
+      {% for posts in sharedposts %}
           <br>
           <div class="well-inverse">
           <div class="panel-heading">
           <h3 class="panel-title">
-            <a href="{{ url_for('event_profile', ename=event_list.name , eid=event_list.key.id() )}}">{{ event_list.name }}</a></h3>
+            <a href="{{ url_for('post_page', postname=posts.postname , postid=posts.key.id() )}}">{{ posts.postname }}</a></h3>
           </div>
           <div class="panel-body">
-              {{ event_list.description }}
+              {{ posts.comment }}
           </div>
         </div>
               

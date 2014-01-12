@@ -197,31 +197,32 @@ def signup():
         try:
             signup.put()
             #signup_id = .key.id()
-            message = mail.EmailMessage(sender='chitrankdixit@gmail.com',subject="Welcome to Eventus")
+            message = mail.EmailMessage(sender='chitrankdixit@gmail.com',subject="Welcome to Shared")
+            print message
             message.to=form.email.data
             message.body = """
             Dear %s:
 
-            Your example.com account has been approved.  You can now visit
+            Your alien-device-451.appspot.com account has been approved.  You can now visit
             %s and access our application's services and features.
 
             Please let us know if you have any questions.
 
             The Eventus Team
-            """ % (form.name.data, "http://www.gcdc2013-eventus.appspot.com/")
+            """ % (form.name.data, "http://alien-device-451.appspot.com/")
 
-            message.html = """
-            <html><head></head><body>
-            Dear %s:
+            # message.html = """
+            # <html><head></head><body>
+            # Dear %s:
 
-            Your example.com account has been approved.  You can now visit
-            %s and access our application's services and features.
+            # Your example.com account has been approved.  You can now visit
+            # %s and access our application's services and features.
 
-            Please let us know if you have any questions.
+            # Please let us know if you have any questions.
 
-            The Eventus Team
-            </body></html>
-            """ % (form.name.data, "http://www.gcdc2013-eventus.appspot.com/")
+            # The Eventus Team
+            # </body></html>
+            # """ % (form.name.data, "http://www.gcdc2013-eventus.appspot.com/")
             
             message.send()
 
@@ -231,7 +232,7 @@ def signup():
             #with app.app_context():
               #mail.send(msg)
             return redirect(url_for('index'))
-        except CapabilityDisabledError:
+        except Exception:
             flash(u'App Engine Datastore is currently in read-only mode.', category='info')
             return redirect(url_for('index'))
     return flask.render_template('signup.html',form=form)
@@ -243,17 +244,14 @@ def signup():
 @login_required
 def user_profile(name,uid):  #
     euid= uid
-    
+    print euid
     user_is = model.User.query()
     usered = user_is.filter(model.User.name == name , model.User.id == uid)
     user_in = user_is.fetch()
     # user = 'Initialized'
     
     user_key = ndb.Key(model.User, uid)
-    comments = model.EventComments.query(model.EventComments.user_id == user_key)
-
-    teamcomments = model.TeamComments.query(model.TeamComments.user_id == user_key)
-
+    
     print user_key
     
     for res in user_in:
@@ -276,9 +274,10 @@ def user_profile(name,uid):  #
       #return redirect(url_for('index'))
 
     # Events created by the user
-    event_st = model.Event.query()
-    event_db = event_st.filter(model.Event.creator_id == euid)
-    results = event_db.fetch()
+    post_st = model.PostBox.query()
+    post_db = post_st.filter(model.PostBox.postbyid == user_key)
+    sharedposts = post_db.fetch()
+
 
     # followers ( user following to and user's followers )
     followers = model.Followers.query()
@@ -312,9 +311,9 @@ def user_profile(name,uid):  #
     # retreive all Messages
     inbox = model.SendMessage.query()
 
-    return flask.render_template('profile.html',results= results,
+    return flask.render_template('profile.html',
      user = user, euid= euid, followers = followers, form=form, inbox=inbox,
-     user_in = user_in , comments= comments, teamcomments = teamcomments
+     user_in = user_in , sharedposts = sharedposts
      )
 
 
@@ -556,40 +555,40 @@ u'given_name': u'Chitrank', u'id': u'113942220708315173370', u'verified_email': 
 ################################################################################
 
 
-@app.route('/signin/google/')
-def signin_google():
-  google_url = users.create_login_url(
-      flask.url_for('google_authorized', next=util.get_next_url())
-    )
-  return flask.redirect(google_url)
+# @app.route('/signin/google/')
+# def signin_google():
+#   google_url = users.create_login_url(
+#       flask.url_for('google_authorized', next=util.get_next_url())
+#     )
+#   return flask.redirect(google_url)
 
 
-@app.route('/_s/callback/google/authorized/')
-def google_authorized():
-  google_user = users.get_current_user()
-  if google_user is None:
-    flask.flash(u'You denied the request to sign in.')
-    return flask.redirect(util.get_next_url())
+# @app.route('/_s/callback/google/authorized/')
+# def google_authorized():
+#   google_user = users.get_current_user()
+#   if google_user is None:
+#     flask.flash(u'You denied the request to sign in.')
+#     return flask.redirect(util.get_next_url())
 
-  user_db = retrieve_user_from_googleopen(google_user)
-  return signin_user_db(user_db)
+#   user_db = retrieve_user_from_googleopen(google_user)
+#   return signin_user_db(user_db)
 
 
-def retrieve_user_from_googleopen(google_user):
-  user_db = model.User.retrieve_one_by('federated_id', google_user.user_id())
-  if user_db:
-    if not user_db.admin and users.is_current_user_admin():
-      user_db.admin = True
-      user_db.put()
-    return user_db
+# def retrieve_user_from_googleopen(google_user):
+#   user_db = model.User.retrieve_one_by('federated_id', google_user.user_id())
+#   if user_db:
+#     if not user_db.admin and users.is_current_user_admin():
+#       user_db.admin = True
+#       user_db.put()
+#     return user_db
 
-  return create_user_db(
-      google_user.nickname().split('@')[0].replace('.', ' ').title(),
-      google_user.nickname(),
-      google_user.email(),
-      federated_id=google_user.user_id(),
-      admin=users.is_current_user_admin(),
-    )
+#   return create_user_db(
+#       google_user.nickname().split('@')[0].replace('.', ' ').title(),
+#       google_user.nickname(),
+#       google_user.email(),
+#       federated_id=google_user.user_id(),
+#       admin=users.is_current_user_admin(),
+#     )
 
 
 
