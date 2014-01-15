@@ -54,6 +54,8 @@ class SigninForm(wtf.Form):
     password = wtf.PasswordField('Password',validators=[validators.Required()])
     remember_me = wtf.BooleanField('remember_me', default = False)
 
+class ForgotPassword(wtf.Form):
+    email = wtf.html5.EmailField('Email', validators=[validators.Required()])
     
 class PostBoxForm(wtf.Form):
     global aboutlist, languagelist

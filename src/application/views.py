@@ -63,7 +63,7 @@ from hashlib import md5
 import util
 import model
 import config
-from forms import SignupForm, SigninForm, CreateEventForm , CreatePost , MessageForm, CommentForm, TeamRegisterForm, InviteUserForm, UserSettingsForm, PostBoxForm
+from forms import SignupForm, SigninForm, CreateEventForm , CreatePost , MessageForm, CommentForm, TeamRegisterForm, InviteUserForm, UserSettingsForm, PostBoxForm, ForgotPassword
 # Google API python Oauth 2.0
 import httplib2
 
@@ -110,6 +110,7 @@ def signin():
     if g.user is not None and g.user.is_authenticated():
         return redirect(url_for('index'))
     form=SigninForm(request.form)
+
     if form.validate_on_submit() and request.method == 'POST':
         
         # model.User.retrieve_one_by('username', form.username.data) && model.User.retrieve_one_by('password', form.password.data) is not None:
@@ -128,7 +129,27 @@ def signin():
         else:
           flask.flash('Sorry, but you could not sign in.', category='danger')
           return flask.redirect(flask.url_for('signin'))
-    return flask.render_template('signin.html', form=form, session=session)
+    forgot_form = ForgotPassword(request.form)
+    if forgot_form.validate_on_submit() and request.method=='POST':
+      userd = model.User.query()
+      userd2 = userd.filter(model.User.email == forgot_form.email.data and model.User.password != u'') 
+      userdata = userd2.fetch()
+      for user in userdata:
+        if user.password:
+          message = mail.EmailMessage(sender='chitrankdixit@gmail.com',subject="Shared: Password Recovery")
+          print message
+          message.to=forgot_form.email.data
+          message.body = """
+          Dear %s:
+
+          Your alien-device-451.appspot.com account password is %s.  You can now visit
+          %s and access our application's services and features.
+
+          Please let us know if you have any questions.
+
+          The Eventus Team
+          """ % (user.name, user.password, "http://alien-device-451.appspot.com/")
+    return flask.render_template('signin.html', form=form, session=session, forgot_form = forgot_form)
  
                 
 '''
@@ -236,6 +257,8 @@ def signup():
             flash(u'App Engine Datastore is currently in read-only mode.', category='info')
             return redirect(url_for('index'))
     return flask.render_template('signup.html',form=form)
+
+
 
 
 # This is user profile

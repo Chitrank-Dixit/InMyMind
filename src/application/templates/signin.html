@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% import 'macro/error.html' as forms %}
 {% block title %} Sign in | Eventus {% endblock %}
 {% block style_block %}
   <!-- Google Analytics -->
@@ -17,6 +16,9 @@
 	
 {% endblock %}
 {% block content %}
+  <!-- forgot password modal -->
+  {% include 'forgot_password.html' %} 
+
 	<div class="container theme-showcase">
 	<div class="row">
 	 
@@ -59,7 +61,7 @@
               </div>
             </div><br>
             <p class="control-group">
-              <a href="" class="pull-right">forgot password</a>
+              <a href="#forgot-password-modal" class="pull-right" data-toggle="modal">forgot password</a>
               {{form.remember_me}} Remember Me </ul>
               
             </p>
@@ -71,10 +73,11 @@
                         <br><br>
   								<button type="submit" name="signin_submit" value"Signin" class="btn btn-success" >Sign in</button><br><br>
                   <ul class="pull-right">Not yet Registered<a href="{{ url_for('signup') }}" > Please Sign Up </a></ul>
-  								Already a Member <a href="{{ url_for('signin') }}">Sign in</a>
+  								
 
                     </div>
             </div>
+
   				<!-- <input type="text" name="username" value="" placeholder="your username" class="form-control" /><br><br>
   				<input type="text" name="password" value="" placeholder="your password" class="form-control" /><br><br><br>
   				<input type="checkbox" name="remember" value="" class="form-control" style="width: 15px; height: 12px;"/> Remember me
@@ -131,6 +134,21 @@ $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 $(document).ready(function () {
 
 $('#signin_form').validate({
+    rules: {
+        
+        
+    },
+    
+    highlight: function (element) {
+        $(element).closest('control-group').removeClass('success').addClass('error');
+    },
+    success: function (element) {
+        element.addClass('valid')
+            .closest('.control-group').removeClass('error').addClass('success');
+    }
+});
+
+$('#forgot_password').validate({
     rules: {
         
         
