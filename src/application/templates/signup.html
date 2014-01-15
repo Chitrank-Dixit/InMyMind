@@ -159,7 +159,7 @@ $('#signup_form').validate({
         $(element).closest('control-group').removeClass('success').addClass('error');
     },
     success: function (element) {
-        element.text('OK!').addClass('valid')
+        element.addClass('valid')
             .closest('.control-group').removeClass('error').addClass('success');
     }
 });
