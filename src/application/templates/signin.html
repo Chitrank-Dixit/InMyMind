@@ -24,7 +24,7 @@
 	 
 			<h3><center>Sign in Eventus</center></h3><br><br>
 			
-		<div class="span4">
+		<div class="span4 well">
 			
   			<form name="signin" id="signin_form" class="navbar-form form-inline" action="{{ url_for('signin') }}" method="post" accept-charset="utf-8">
   				{{ form.csrf_token }}
@@ -92,11 +92,13 @@
 		</div>
     
 		<div class="span3">
-
+      <center>
+        <font size="3">OR</font>
+      </center>
     </div>
 		<div class="span5 pull-right">
 			<div class="row">
-			
+			   
         <!-- <a class="btn btn-large btn-google-plus" href="/signin/google/">
         		<i class="icon-large icon-google-plus"></i> 
         			Sign in with Google

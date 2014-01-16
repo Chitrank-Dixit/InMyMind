@@ -21,7 +21,7 @@
 	<div class="row">
 	       
       <h3><center>Sign Up Eventus</center></h3><br><br>
-		<div class="span5">
+		<div class="span5 well">
   			<form name="signup" id="signup_form" class="navbar-form form-inline" action="{{ url_for('signup') }}" method="post" accept-charset="utf-8">
 				{{ form.csrf_token }}
 				<fieldset> 
@@ -113,6 +113,9 @@
   			
 		</div>
 		<div class="span1">
+      <center>
+        <font size="3">OR</font>
+      </center>
 		</div>
 		<div class="span5 pull-right">
 			<!-- <a class="btn btn-large btn-google-plus" href="/signin/google/">

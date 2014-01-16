@@ -23,7 +23,7 @@
         a.custom { 
             font-family: "My Custom Font", Verdana, Tahoma;
         }
-        body { padding-top: 40px; }
+        body { padding-top: -0px; }
         @media screen and (max-width: 768px) {
         body { padding-top: 0px; }
         }
@@ -64,10 +64,11 @@
     {% block head_script %}{# defer-incapable JS block #}{% endblock %} 
 </head>
 <body>
-<div id="wrap">
-    <div id="header">
+<div id="header">
         {% include 'addables/header.html' %} {# pull in navbar #}
-    </div>
+</div>
+<div id="wrap">
+    
     <div class="container" id="maincontent">
         
         

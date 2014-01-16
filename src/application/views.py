@@ -34,7 +34,7 @@ import json
 import random
 import string, time
 from apiclient.discovery import build
-from flask import make_response, request, render_template, flash, url_for, redirect, session,g, jsonify
+from flask import make_response, request, render_template, flash, url_for, escape, redirect, session,g, jsonify
 # from flask.ext import 
 import flask,flask.views
 from flask_cache import Cache
@@ -102,13 +102,17 @@ def before_request():
 
 @app.route('/')
 def index():
-	return flask.render_template('index.html')
+  # if 'username' in session:
+  #   print 'Logged in as %s' % escape(session['username']
+  #print 'You are not logged in'
+  return flask.render_template('index.html')
+  
 	
 	
 @app.route('/signin/',methods=['POST','GET'])
 def signin():
     if g.user is not None and g.user.is_authenticated():
-        return redirect(url_for('index'))
+      return redirect(url_for('index'))
     form=SigninForm(request.form)
 
     if form.validate_on_submit() and request.method == 'POST':
@@ -124,7 +128,8 @@ def signin():
           flask.flash('Hello %s, welcome to %s' % (
             user_db.name, config.CONFIG_DB.brand_name,
             ), category='success')
-          session['remember_me'] = form.remember_me.data
+          session['username'] = form.name.data
+          print 'Hiii'
           return flask.redirect(flask.url_for('index'))
         else:
           flask.flash('Sorry, but you could not sign in.', category='danger')
@@ -149,6 +154,10 @@ def signin():
 
           The Eventus Team
           """ % (user.name, user.password, "http://alien-device-451.appspot.com/")
+          flask.flash(user.name + "Password has been recovered please check your registered email" , category = "success")
+        else:
+          flask.flash(user.name + "with " +forgot_form.email.data + "does not exist or might signed in to the application using social signin" , category = "danger")
+
     return flask.render_template('signin.html', form=form, session=session, forgot_form = forgot_form)
  
                 
@@ -266,6 +275,7 @@ def signup():
 @app.route('/user/<name>/<int:uid>/', methods=['GET','POST']) # /
 @login_required
 def user_profile(name,uid):  #
+  if 'username' in session:
     euid= uid
     print euid
     user_is = model.User.query()
@@ -338,131 +348,147 @@ def user_profile(name,uid):  #
      user = user, euid= euid, followers = followers, form=form, inbox=inbox,
      user_in = user_in , sharedposts = sharedposts
      )
+  else:
+    flask.flash('Please log in to view this page')
+    return redirect(url_for('signin'))
 
 
 
 @app.route('/follow/<name>/<int:uid>/', methods=['POST','GET'])
 @login_required
 def follow_user(name,uid):
-  n=name; ui=uid
-  user_is = model.User.query(model.User.name == name , model.User.id == uid)
-  if user_is==None:
-    return redirect(url_for('index'))
-  uiid = ndb.Key(model.User, uid)
-  user = model.User.retrieve_one_by('name' and 'key' ,name and uiid)
-  
-  # print '-----------Here it is',user_is
-  
-  if user == g.user:
-    flash('You can not Unfollow Yourself',category='warning')
+  if 'username' in session:
+    n=name; ui=uid
+    user_is = model.User.query(model.User.name == name , model.User.id == uid)
+    if user_is==None:
+      return redirect(url_for('index'))
+    uiid = ndb.Key(model.User, uid)
+    user = model.User.retrieve_one_by('name' and 'key' ,name and uiid)
+    
+    # print '-----------Here it is',user_is
+    
+    if user == g.user:
+      flash('You can not Unfollow Yourself',category='warning')
 
 
-  # cur_user = model.Followers.follower_id.id('follower_id', current_user.get_id())
-  # to_follow = model.Followers.followed_id.id('followed_id', n.get_id())
-  # cur_user = 
-  #site_en = model.Followers.query(model.Followers.follower_id == current_user.get_id() , model.Followers.followed_id == n.get_id())
-  #site_en.key.id()
-  # followornot = model.Followers.get_multi([current_user.name, user.name])
-  #site_en = model.Followers.query(model.Followers.follower_id == current_user.get_id() , model.Followers.followed_id == n.get_id())
-  cur_user = ndb.Key(model.Followers, current_user.name)
-  to_follow = ndb.Key(model.Followers, user.name)
-  model_ex = model.Followers.query()
-  #site_en =  model.Followers.query(model.Followers.follower_id == (ndb.Key(model.Followers, current_user.name)), model.followed_id == ndb.Key(model.Followers, user.name)).fetch()
-  #site_en = model_ex.filter(model.Followers.follower_id == cur_user, model.Followers.followed_id == to_follow)
-  print model_ex
+    # cur_user = model.Followers.follower_id.id('follower_id', current_user.get_id())
+    # to_follow = model.Followers.followed_id.id('followed_id', n.get_id())
+    # cur_user = 
+    #site_en = model.Followers.query(model.Followers.follower_id == current_user.get_id() , model.Followers.followed_id == n.get_id())
+    #site_en.key.id()
+    # followornot = model.Followers.get_multi([current_user.name, user.name])
+    #site_en = model.Followers.query(model.Followers.follower_id == current_user.get_id() , model.Followers.followed_id == n.get_id())
+    cur_user = ndb.Key(model.Followers, current_user.name)
+    to_follow = ndb.Key(model.Followers, user.name)
+    model_ex = model.Followers.query()
+    #site_en =  model.Followers.query(model.Followers.follower_id == (ndb.Key(model.Followers, current_user.name)), model.followed_id == ndb.Key(model.Followers, user.name)).fetch()
+    #site_en = model_ex.filter(model.Followers.follower_id == cur_user, model.Followers.followed_id == to_follow)
+    print model_ex
 
-  for entry in model_ex:
-    if entry.follower_name.string_id() == current_user.id and entry.followed_name.string_id() == user.id:
-      flash('You are Already Following %s'%(user.name), category='warning')
-      return redirect(url_for('user_profile',name = n, uid= ui))
+    for entry in model_ex:
+      if entry.follower_name.string_id() == current_user.id and entry.followed_name.string_id() == user.id:
+        flash('You are Already Following %s'%(user.name), category='warning')
+        return redirect(url_for('user_profile',name = n, uid= ui))
 
 
-  #cur_user = ndb.Key(model.Followers, current_user.name)
-  #to_follow = ndb.Key(model.Followers, user.name)
-  #print cur_user.id() , to_follow.id()
-  print ui
-  #print "-----------He it oc------------",cur_user.string_id(), to_follow
-  follower_name = ndb.Key(model.User, current_user.name)
-  followed_name = ndb.Key(model.User, user.name)
-  follower_avatar = ndb.Key(model.User, current_user.avatar(80))
-  followed_avatar = ndb.Key(model.User, user.avatar(80))
-  follow = model.Followers(
-    follower_name = follower_name,
-    follower_id = current_user.id, 
-    followed_name = followed_name,
-    followed_id = ui,
-    follower_avatar = follower_avatar,
-    followed_avatar = followed_avatar,
-    )
-  try:
-    follow.put()
-    # flash('%s you are now following %s' %(current_user.name,user.name), category='info')
-    redirect(url_for('user_profile', name=n, uid=ui))
-  except CapabilityDisabledError:
-    flash('Ahh Something Went wrong with the server',category = 'danger')  
-  return redirect(url_for('user_profile',name = n, uid= ui, m=False))
+    #cur_user = ndb.Key(model.Followers, current_user.name)
+    #to_follow = ndb.Key(model.Followers, user.name)
+    #print cur_user.id() , to_follow.id()
+    print ui
+    #print "-----------He it oc------------",cur_user.string_id(), to_follow
+    follower_name = ndb.Key(model.User, current_user.name)
+    followed_name = ndb.Key(model.User, user.name)
+    follower_avatar = ndb.Key(model.User, current_user.avatar(80))
+    followed_avatar = ndb.Key(model.User, user.avatar(80))
+    follow = model.Followers(
+      follower_name = follower_name,
+      follower_id = current_user.id, 
+      followed_name = followed_name,
+      followed_id = ui,
+      follower_avatar = follower_avatar,
+      followed_avatar = followed_avatar,
+      )
+    try:
+      follow.put()
+      # flash('%s you are now following %s' %(current_user.name,user.name), category='info')
+      redirect(url_for('user_profile', name=n, uid=ui))
+    except CapabilityDisabledError:
+      flash('Ahh Something Went wrong with the server',category = 'danger')  
+    return redirect(url_for('user_profile',name = n, uid= ui, m=False))
+  else:
+    return redirect(url_for('signin'))
 
 @app.route('/unfollow/<name>/<int:uid>', methods=['POST','GET'])
 @login_required
 def unfollow_user(name,uid):
-  n=name; ui=uid
-  user_is = model.User.query(model.User.name == name , model.User.id == uid)
-  if user_is==None:
-    return redirect(url_for('index'))
-  user = model.User.retrieve_one_by('name' ,name)
-  uid = model.User.retrieve_one_by('id' ,uid)
-  
-  if user == g.user:
-    flash('You can not Unfollow Yourself',category='warning')
+  if 'username' in session:
+    n=name; ui=uid
+    user_is = model.User.query(model.User.name == name , model.User.id == uid)
+    if user_is==None:
+      return redirect(url_for('index'))
+    user = model.User.retrieve_one_by('name' ,name)
+    uid = model.User.retrieve_one_by('id' ,uid)
+    
+    if user == g.user:
+      flash('You can not Unfollow Yourself',category='warning')
 
-  cur_user = ndb.Key(model.Followers, current_user.name)
-  to_follow = ndb.Key(model.Followers, name)
+    cur_user = ndb.Key(model.Followers, current_user.name)
+    to_follow = ndb.Key(model.Followers, name)
 
-  model_ex = model.Followers.query()
-  for entry in model_ex:
-    if entry.follower_name.string_id() == current_user.name and entry.followed_name.string_id() == name:
-      try:
-        entry.key.delete()
-        flash('You are not Following %s'%(name), category='info')
-      except CapabilityDisabledError:
-        flash(u'App Engine Datastore is currently in read-only mode.', category='danger')
-  return redirect(url_for('user_profile',name = n, uid= ui))
+    model_ex = model.Followers.query()
+    for entry in model_ex:
+      if entry.follower_name.string_id() == current_user.name and entry.followed_name.string_id() == name:
+        try:
+          entry.key.delete()
+          flash('You are not Following %s'%(name), category='info')
+        except CapabilityDisabledError:
+          flash(u'App Engine Datastore is currently in read-only mode.', category='danger')
+    return redirect(url_for('user_profile',name = n, uid= ui))
+  else:
+    return redirect(url_for('signin'))
 
 @app.route('/notifications/<name>/<int:uid>', methods=['GET','POST'])
 @login_required
 def user_notifications(name,uid):
-  user_id = ndb.Key(model.User, current_user.id)
-  print user_id
-  notify = model.EventInvites.query(model.EventInvites.invited_to == current_user.name, model.EventInvites.user_id == user_id)
+  if 'username' in session:
+    user_id = ndb.Key(model.User, current_user.id)
+    print user_id
+    notify = model.EventInvites.query(model.EventInvites.invited_to == current_user.name, model.EventInvites.user_id == user_id)
 
-  return render_template('notifications.html', notify=notify)
+    return render_template('notifications.html', notify=notify)
+  else:
+    return redirect(url_for('signin'))
 
 
 @app.route('/edit_profile/<name>/<int:uid>', methods=['GET','POST'])
 @login_required
 def user_profile_settings(name,uid):
-  userSettings = UserSettingsForm(request.form)
-  user_is = model.User.query(model.User.name == name , model.User.id == uid)
-  uiid = ndb.Key(model.User, uid)
-  user = model.User.retrieve_one_by('name' and 'key' ,name and uiid)
-  if userSettings.validate_on_submit() and request.method == 'POST':
-    print "Scooby DOO"
-    user.location = userSettings.location.data
-    user.about_me = userSettings.about.data
-    user.googleplus_id = userSettings.google_plusId.data
-    user.facebook_id = userSettings.facebookId.data
-    user.twitter_id = userSettings.twitterId.data
-    user.put()
-    flash('Profile has been updated', category="info")
-    return redirect(url_for('user_profile_settings', name=name, uid=uid))
-  print user, user_is
-  
-  return render_template('edit_profile.html', userSettings=userSettings, user_is =user_is)
+  if 'username' in session:
+    userSettings = UserSettingsForm(request.form)
+    user_is = model.User.query(model.User.name == name , model.User.id == uid)
+    uiid = ndb.Key(model.User, uid)
+    user = model.User.retrieve_one_by('name' and 'key' ,name and uiid)
+    if userSettings.validate_on_submit() and request.method == 'POST':
+      print "Scooby DOO"
+      user.location = userSettings.location.data
+      user.about_me = userSettings.about.data
+      user.googleplus_id = userSettings.google_plusId.data
+      user.facebook_id = userSettings.facebookId.data
+      user.twitter_id = userSettings.twitterId.data
+      user.put()
+      flash('Profile has been updated', category="info")
+      return redirect(url_for('user_profile_settings', name=name, uid=uid))
+    print user, user_is
+    
+    return render_template('edit_profile.html', userSettings=userSettings, user_is =user_is)
+  else:
+    return redirect(url_for('signin'))
 
 
 
 @app.route('/signout',methods=['POST','GET'])
 def signout():
+  session.pop('username', None)
   login.logout_user()
   flash(u'You have been signed out.','success')
   return redirect(url_for('index'))
@@ -766,6 +792,7 @@ def signin_user_db(user_db):
     return flask.redirect(flask.url_for('signin'))
   flask_user_db = FlaskUser(user_db)
   if login.login_user(flask_user_db):
+    session['username'] = user_db.username
     flask.flash('Hello %s, welcome to %s' % (
         user_db.name, config.CONFIG_DB.brand_name,
       ), category='success')
@@ -802,81 +829,87 @@ def crop_youtube_url(url):
 @app.route('/share_post/', methods=['GET','POST'])
 @login_required
 def share_a_post():
-  form = PostBoxForm(request.form)
-  use_db = ndb.Key(model.User, current_user.name)
-  id_db = ndb.Key(model.User, current_user.id)
-  print use_db, id_db.integer_id()
-  if request.method=='POST':
-    print "hii"
-    sharepost = model.PostBox(
-      postbyname = use_db,
-      postbyid = id_db,
-      postname = form.postname.data,
-      postUrl = form.posturl.data ,
-      safeToWork = request.form['safe'],
-      about = form.about.data,
-      comment = form.comment.data , 
-      language = form.language.data,
-      tags = form.tags.data,
-      credits = 100 
-      )
-    try:
-      sharedpost = sharepost.put()
-      print "records is:------",sharepost
-      postid=sharedpost.integer_id()
-      post_key = ndb.Key(model.Event, postid)
-      return redirect(url_for('post_page', postname = form.postname.data , postid =  postid))
-    except CapabilityDisabledError:
-      flash('Something went wrong and your comment has not been posted', category='danger')
-  return render_template('share_story.html', form= form)
+  if 'username' in session:
+    form = PostBoxForm(request.form)
+    use_db = ndb.Key(model.User, current_user.name)
+    id_db = ndb.Key(model.User, current_user.id)
+    print use_db, id_db.integer_id()
+    if request.method=='POST':
+      print "hii"
+      sharepost = model.PostBox(
+        postbyname = use_db,
+        postbyid = id_db,
+        postname = form.postname.data,
+        postUrl = form.posturl.data ,
+        safeToWork = request.form['safe'],
+        about = form.about.data,
+        comment = form.comment.data , 
+        language = form.language.data,
+        tags = form.tags.data,
+        credits = 100 
+        )
+      try:
+        sharedpost = sharepost.put()
+        print "records is:------",sharepost
+        postid=sharedpost.integer_id()
+        post_key = ndb.Key(model.Event, postid)
+        return redirect(url_for('post_page', postname = form.postname.data , postid =  postid))
+      except CapabilityDisabledError:
+        flash('Something went wrong and your comment has not been posted', category='danger')
+    return render_template('share_story.html', form= form)
+  else:
+    return redirect(url_for('signin'))
 
 @app.route('/shared/<postname>/<int:postid>',methods=['POST','GET'])
 @login_required
 def post_page(postname, postid):
   """
   """
-  post_id = ndb.Key(model.PostBox, postid)
-  post_name = ndb.Key(model.PostBox, postname)
-    
-  # events = model.Event.query(model.Event.name == ename, model.Event.creator_id == eid)
-  # comments_store = model.EventComments.query(model.EventComments.event_id == event_id)
-  
-  user_id = ndb.Key(model.User, current_user.id)
-  name = ndb.Key(model.User, current_user.name)
-
-  # if comments been posted
-  comment_json = request.json
-  # print "Here is the list",events.name
-  # if user been invited
-  invite_json = request.json
-  
-  
-  # send all the Teams of an Event
-  
-  form = CommentForm(request.form)
-  # print request.json, type(comment_json)
-  if request.method == 'POST' and comment_json:
-    print request.json
-    avatarUrl = ndb.Key(model.User, request.json['avatar'])
-    comments = model.PostComments(
-        name = name,
-        user_id = user_id,
-        post_id = post_id,
-        post_name = post_name,
-        comment = request.json['comment'],
-        avatar = avatarUrl
-      )
-    try:
-      posted = comments.put()
-      # flash('your comment has been posted', category='info')
-      # mail.send(msg)
-      # print name.string_id() , user_id.integer_id() , event_id
-      return jsonify({ "name": name.string_id(),"uid": user_id.integer_id(), "post_id": post_id.integer_id(), "comment": request.json['comment'] , "avatar": request.json['avatar'] })
-    except CapabilityDisabledError:
-      flash('Something went wrong and your comment has not been posted', category='danger')
+  if 'username' in session:
+    post_id = ndb.Key(model.PostBox, postid)
+    post_name = ndb.Key(model.PostBox, postname)
       
-  
-  return render_template('post_profile.html', postname =postname , postid= postid , form= form)
+    # events = model.Event.query(model.Event.name == ename, model.Event.creator_id == eid)
+    # comments_store = model.EventComments.query(model.EventComments.event_id == event_id)
+    
+    user_id = ndb.Key(model.User, current_user.id)
+    name = ndb.Key(model.User, current_user.name)
+
+    # if comments been posted
+    comment_json = request.json
+    # print "Here is the list",events.name
+    # if user been invited
+    invite_json = request.json
+    
+    
+    # send all the Teams of an Event
+    
+    form = CommentForm(request.form)
+    # print request.json, type(comment_json)
+    if request.method == 'POST' and comment_json:
+      print request.json
+      avatarUrl = ndb.Key(model.User, request.json['avatar'])
+      comments = model.PostComments(
+          name = name,
+          user_id = user_id,
+          post_id = post_id,
+          post_name = post_name,
+          comment = request.json['comment'],
+          avatar = avatarUrl
+        )
+      try:
+        posted = comments.put()
+        # flash('your comment has been posted', category='info')
+        # mail.send(msg)
+        # print name.string_id() , user_id.integer_id() , event_id
+        return jsonify({ "name": name.string_id(),"uid": user_id.integer_id(), "post_id": post_id.integer_id(), "comment": request.json['comment'] , "avatar": request.json['avatar'] })
+      except CapabilityDisabledError:
+        flash('Something went wrong and your comment has not been posted', category='danger')
+        
+    
+    return render_template('post_profile.html', postname =postname , postid= postid , form= form)
+  else:
+    return redirect(url_for('signin'))
 
 @app.route('/comments/<int:postid>',methods=['GET'])
 @login_required
