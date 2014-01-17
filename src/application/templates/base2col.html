@@ -75,11 +75,14 @@
         <div class="container-fluid">
             {% include 'addables/flash_message.html' %} {# page-level feedback notices #}
             <div class="row-fluid">
-                <div class="span10">
+                <div class="span3">
+                    {% block side_leftcontent %}{# main content area #}{% endblock %}
+                </div>
+                <div class="span7">
                   {% block main_content %}{# main content area #}{% endblock %}
                 </div>
                 <div class="span2">
-                    {% block side_content %}{# main content area #}{% endblock %}
+                    {% block side_rightcontent %}{# main content area #}{% endblock %}
                 </div>
           </div>
         </div>

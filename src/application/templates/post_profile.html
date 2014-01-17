@@ -20,12 +20,16 @@
 {% endblock %}
 
 
-{% block side_content %}
+{% block side_rightcontent %}
   <p>Hehehe</p>
 
 {% endblock %}
-
+{% block side_leftcontent %}
+   <p>Hehehe</p>
+{% endblock %}
 {% block main_content %}
+
+<h2>{{postname}}</h2>
 
 <!-- AddThis Button BEGIN -->
 <div class="addthis_toolbox addthis_default_style">
@@ -40,7 +44,7 @@
 
 <div class="row">
   
-      <div class="span7">
+      <div class="span10">
         <h3><i class="icon-comments"></i> Comments</h3> 
         <form id="comment_form" class="navbar-form form-inline"  data-bind="submit: addComment" method="post">
         {{ form.csrf_token }}
@@ -51,7 +55,7 @@
                       <div class="controls">
 
                             <p>
-                            {{ form.comment(id='comment',class='form-horizontal full-width required span7',placeholder="Please post your Comment Here", style="width: 500px;", autocomplete=True, **{'data-bind': 'value:  comment', 'data-required' : 'true' })}}</p>
+                            {{ form.comment(id='comment',class='form-horizontal full-width required span12',placeholder="Please post your Comment Here", autocomplete=True, **{'data-bind': 'value:  comment', 'data-required' : 'true' })}}</p>
                             {% if form.comment.errors %}
                             <ul class="errors">
                                 {% for error in form.comment.errors %}
@@ -76,17 +80,19 @@
         </form>
 
       <ul data-bind="foreach: comments, visible: comments().length > 0">
-            <div class="well-inverse">
+            <div class="panel panel-default">
                 <!-- data-bind="attr: { href: commentBy , name: name , uid: uid }" -->
                 <div class="container-fluid">
                   <div class="row-fluid">
                     <div class="span2">
                       <div class="panel-footer">
+                        <a data-bind="attr:{ href:  '/user/' + name() + '/' + uid() + '/' }">
                         <img class="img-circle" data-bind="attr:{src: avatar}" /><br>
-                        <a data-bind="attr:{ href:  '/user/' + name() + '/' + uid() + '/' }"><p data-bind="text: cname"></p></a>
+                        <p data-bind="text: cname"></p></a>
                       </div>
                     </div>
-                    <div class="span10">
+                    <div class="span1"></div>
+                    <div class="span9">
                       <div class="panel-body">
                         <p class="pull-left" data-bind="text: comment"></p><br><br>
                       </div>
