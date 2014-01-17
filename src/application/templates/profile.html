@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}{{user.name}} Profile | Eventus {% endblock %}
+{% block title %}{{user.name}} Profile | InMyMind {% endblock %}
 {% block style_block %}
 	
 	
@@ -12,7 +12,7 @@
 		{% include 'send_message.html' %}	
 		<div class="span3 background" >
   		  
-
+        
   			<img src="{{user.avatar(128)}}" class="img-polaroid" />
         {% if g.user.id == euid %}
 

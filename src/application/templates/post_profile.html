@@ -1,6 +1,6 @@
 {% extends "base2col.html" %}
 <html xmlns:fb="http://ogp.me/ns/fb#">
-{% block title %} {{postname}} | Handitover {% endblock %}
+{% block title %} {{postname}} | InMyMind {% endblock %}
 
 {% block style_block %}
   <!-- Google Analytics -->
@@ -28,10 +28,12 @@
    <p>Hehehe</p>
 {% endblock %}
 {% block main_content %}
-
 <h2>{{postname}}</h2>
 <p>{{current_post.postUrl}}</p>
 <p>{{current_post.comment}}</p>
+<a href="{{ url_for('user_profile', name=current_post.postbyname.string_id(), uid = current_post.postbyid.integer_id() )}}">
+<img class="img-circle" src="{{ author.avatar(60) }}">
+<p> {{current_post.postbyname.string_id()}}</p></a><br>
 <!-- AddThis Button BEGIN -->
 <div class="addthis_toolbox addthis_default_style">
 <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
@@ -80,7 +82,7 @@
         </form>
 
       <ul data-bind="foreach: comments, visible: comments().length > 0">
-            <div class="panel panel-default">
+            <div class="well-inverse">
                 <!-- data-bind="attr: { href: commentBy , name: name , uid: uid }" -->
                 <div class="container-fluid">
                   <div class="row-fluid">
@@ -99,7 +101,7 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div><br>
 
         </ul>
         

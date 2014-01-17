@@ -13,16 +13,23 @@ import jinja2
 # import wtforms_json
 from momentjs import momentjs
 import os
+from flask_cache import Cache
 
 
 app = Flask('application')
+# Flask-Cache (configured to use App Engine Memcache API)
+cache = Cache(app)
+
 app.config.from_object('application.settings')
+
 app.config.update(
     
     SECRET_KEY='SFxHRvAvD_w9JzfUhI8EiJrS',
     GOOGLE_LOGIN_CLIENT_ID='1075048200759-5hunu03e087bha87d48874veh1rvr97f.apps.googleusercontent.com',
     GOOGLE_LOGIN_CLIENT_SECRET='SFxHRvAvD_w9JzfUhI8EiJrS',
-    GOOGLE_LOGIN_REDIRECT_URI='http://localhost:8080/registered/')
+    GOOGLE_LOGIN_REDIRECT_URI='http://localhost:8080/registered/'
+
+    )
     
 app.debug = True
 #mail = Mail()

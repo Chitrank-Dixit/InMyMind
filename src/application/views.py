@@ -37,7 +37,7 @@ from apiclient.discovery import build
 from flask import make_response, request, render_template, flash, url_for, escape, redirect, session,g, jsonify
 # from flask.ext import 
 import flask,flask.views
-from flask_cache import Cache
+
 # from flaskext.mail.message import Message
 # Flask-mail documentation http://pythonhosted.org/flask-mail/
 #from models import FlaskUser
@@ -75,8 +75,11 @@ from oauth2client.client import FlowExchangeError
 from simplekv.memory import DictStore
 from flaskext.kvsession import KVSessionExtension
 
+from flask_cache import Cache
+
 # Flask-Cache (configured to use App Engine Memcache API)
 cache = Cache(app)
+
 
 # Mail settings specified
 # message = mail.InboundEmailMessage(request.body)
@@ -274,6 +277,7 @@ def signup():
 # @app.route('/user/<name>/')
 @app.route('/user/<name>/<int:uid>/', methods=['GET','POST']) # /
 @login_required
+#@cache.cached(timeout=50, key_prefix='user_profile')
 def user_profile(name,uid):  #
   if 'username' in session:
     euid= uid
@@ -449,6 +453,7 @@ def unfollow_user(name,uid):
 
 @app.route('/notifications/<name>/<int:uid>', methods=['GET','POST'])
 @login_required
+@cache.cached(timeout=50, key_prefix='user_notifications')
 def user_notifications(name,uid):
   if 'username' in session:
     user_id = ndb.Key(model.User, current_user.id)
@@ -862,6 +867,7 @@ def share_a_post():
 
 @app.route('/shared/<postname>/<int:postid>',methods=['POST','GET'])
 @login_required
+#@cache.cached(timeout=50, key_prefix='post_page')
 def post_page(postname, postid):
   """
   """
@@ -876,6 +882,7 @@ def post_page(postname, postid):
     name = ndb.Key(model.User, current_user.name)
     current_post  = model.PostBox.retrieve_one_by('postname' and 'key', postname and post_id)
     # if comments been posted
+    author = model.User.retrieve_one_by('key', user_id)
     print current_post
     comment_json = request.json
     # print "Here is the list",events.name
@@ -908,12 +915,13 @@ def post_page(postname, postid):
         flash('Something went wrong and your comment has not been posted', category='danger')
         
     
-    return render_template('post_profile.html', postname =postname , postid= postid , form= form, current_post=current_post)
+    return render_template('post_profile.html', postname =postname , postid= postid , form= form, current_post=current_post, author=author)
   else:
     return redirect(url_for('signin'))
 
 @app.route('/comments/<int:postid>',methods=['GET'])
 @login_required
+@cache.cached(timeout=50, key_prefix='all_post_comments')
 def all_post_comments(postid):
   post_id = ndb.Key(model.PostBox, postid)
   comments = model.PostComments.query(model.PostComments.post_id == post_id)
@@ -934,6 +942,7 @@ def all_post_comments(postid):
 
 
 @app.route('/shared', methods=['GET','POST'])
+#@cache.cached(timeout=50, key_prefix='shared_posts')
 def shared_posts():
   sharedposts= model.PostBox.query()
   return render_template('shared_posts.html', sharedposts=sharedposts)
