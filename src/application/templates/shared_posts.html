@@ -41,7 +41,7 @@
 
 <div class="well-inverse">
     <div class="panel-heading">
-      {{ posts.postname }} <br>
+      <a href="{{ url_for('post_page', postname=posts.postname, postid = posts.key.id() )}}">{{ posts.postname }}</a> <br>
       {{ posts.postUrl }}
     </div>
     <div class="panel-body">

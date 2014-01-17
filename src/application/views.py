@@ -874,8 +874,9 @@ def post_page(postname, postid):
     
     user_id = ndb.Key(model.User, current_user.id)
     name = ndb.Key(model.User, current_user.name)
-
+    current_post  = model.PostBox.retrieve_one_by('postname' and 'key', postname and post_id)
     # if comments been posted
+    print current_post
     comment_json = request.json
     # print "Here is the list",events.name
     # if user been invited
@@ -907,7 +908,7 @@ def post_page(postname, postid):
         flash('Something went wrong and your comment has not been posted', category='danger')
         
     
-    return render_template('post_profile.html', postname =postname , postid= postid , form= form)
+    return render_template('post_profile.html', postname =postname , postid= postid , form= form, current_post=current_post)
   else:
     return redirect(url_for('signin'))
 

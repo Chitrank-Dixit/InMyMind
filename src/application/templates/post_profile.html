@@ -30,7 +30,8 @@
 {% block main_content %}
 
 <h2>{{postname}}</h2>
-
+<p>{{current_post.postUrl}}</p>
+<p>{{current_post.comment}}</p>
 <!-- AddThis Button BEGIN -->
 <div class="addthis_toolbox addthis_default_style">
 <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
@@ -42,7 +43,6 @@
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=chitrank"></script>
 <!-- AddThis Button END -->
 
-<div class="row">
   
       <div class="span10">
         <h3><i class="icon-comments"></i> Comments</h3> 
@@ -115,8 +115,7 @@
 
 
    
-<!-- row class end -->
-</div>
+
 
 
 <!-- fullEventPage  div end-->
