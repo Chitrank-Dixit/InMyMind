@@ -41,7 +41,7 @@ import flask,flask.views
 # from flaskext.mail.message import Message
 # Flask-mail documentation http://pythonhosted.org/flask-mail/
 #from models import FlaskUser
-from application import app #, mail  
+from application import app , cache#, mail  
 # from decorators import login_required, admin_required
 # from forms import ExampleForm
 from models import *
@@ -75,10 +75,6 @@ from oauth2client.client import FlowExchangeError
 from simplekv.memory import DictStore
 from flaskext.kvsession import KVSessionExtension
 
-from flask_cache import Cache
-
-# Flask-Cache (configured to use App Engine Memcache API)
-cache = Cache(app)
 
 
 # Mail settings specified

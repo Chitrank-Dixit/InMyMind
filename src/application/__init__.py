@@ -17,11 +17,11 @@ from flask_cache import Cache
 
 
 app = Flask('application')
-# Flask-Cache (configured to use App Engine Memcache API)
-cache = Cache(app)
+
 
 app.config.from_object('application.settings')
-
+# Flask-Cache (configured to use App Engine Memcache API)
+cache = Cache(app)
 app.config.update(
     
     SECRET_KEY='SFxHRvAvD_w9JzfUhI8EiJrS',
