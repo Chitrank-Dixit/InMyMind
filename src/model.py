@@ -45,7 +45,7 @@ class Config(Base, modelx.ConfigX):
   announcement_type = ndb.StringProperty(default='info', choices=[
       'info', 'warning', 'success', 'danger',
     ])
-  brand_name = ndb.StringProperty(default='Handitover')
+  brand_name = ndb.StringProperty(default='InMyMind')
   linkedin_app_id=ndb.StringProperty(default='')
   linkedin_app_secret=ndb.StringProperty(default='')
   googleplus_app_id=ndb.StringProperty(default='')
