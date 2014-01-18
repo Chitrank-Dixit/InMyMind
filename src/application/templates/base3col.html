@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" class="no-js">
-  <!--
-		{% set bootstrap_version = '2.3.1' %}
-		{% set modernizer_version = '2.6.2' %}
-		{% set jquery_version = '1.9.1' %} -->
+  	{% set bootstrap_version = '2.3.1' %}
+	{% set modernizer_version = '2.6.2' %}
+	{% set jquery_version = '1.9.1' %}
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,6 +25,10 @@
         body { padding-top: -0px; }
         @media screen and (max-width: 768px) {
         body { padding-top: 0px; }
+        }
+
+        #maincontent {
+            padding-top: 90px;
         }
     </style>
 
@@ -56,7 +59,8 @@
     <!-- Custom styles for this template -->
     <link href="{{ url_for('static', filename='bootstrap/css/panels.css') }}" rel="stylesheet">
     <!-- <link href="{{ url_for('static', filename='bootstrap/css/social-buttons.css') }}" rel="stylesheet"> -->
-    <style> body { padding-top: 90px; 
+    <style> body { /*padding-top: 90px;*/ 
+        margin-bottom: -90px;
         background-color: #F5F5F5;
      } </style> <!-- Bootstrap -->
      <!-- <link href="/static/css/main.css" rel="stylesheet" /> --> 
