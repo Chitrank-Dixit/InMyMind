@@ -854,6 +854,7 @@ def share_a_post():
         print "records is:------",sharepost
         postid=sharedpost.integer_id()
         post_key = ndb.Key(model.Event, postid)
+        time.sleep(2)
         return redirect(url_for('post_page', postname = form.postname.data , postid =  postid))
       except CapabilityDisabledError:
         flash('Something went wrong and your comment has not been posted', category='danger')
