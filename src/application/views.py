@@ -939,7 +939,7 @@ def all_post_comments(postid):
 
 
 @app.route('/shared', methods=['GET','POST'])
-#@cache.cached(timeout=50, key_prefix='shared_posts')
+@cache.cached(timeout=50, key_prefix='shared_posts')
 def shared_posts():
   sharedposts= model.PostBox.query()
   return render_template('shared_posts.html', sharedposts=sharedposts)
