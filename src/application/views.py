@@ -918,7 +918,7 @@ def post_page(postname, postid):
 
 @app.route('/comments/<int:postid>',methods=['GET'])
 @login_required
-@cache.cached(timeout=50, key_prefix='all_post_comments')
+@cache.cached(timeout=40, key_prefix='all_post_comments')
 def all_post_comments(postid):
   post_id = ndb.Key(model.PostBox, postid)
   comments = model.PostComments.query(model.PostComments.post_id == post_id)
