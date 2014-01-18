@@ -864,7 +864,7 @@ def share_a_post():
 
 @app.route('/shared/<postname>/<int:postid>',methods=['POST','GET'])
 @login_required
-#@cache.cached(timeout=50, key_prefix='post_page')
+@cache.cached(timeout=50, key_prefix='post_page')
 def post_page(postname, postid):
   """
   """
