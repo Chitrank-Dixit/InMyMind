@@ -449,7 +449,7 @@ def unfollow_user(name,uid):
 
 @app.route('/notifications/<name>/<int:uid>', methods=['GET','POST'])
 @login_required
-@cache.cached(timeout=50, key_prefix='user_notifications')
+#@cache.cached(timeout=50, key_prefix='user_notifications')
 def user_notifications(name,uid):
   if 'username' in session:
     user_id = ndb.Key(model.User, current_user.id)
@@ -864,7 +864,7 @@ def share_a_post():
 
 @app.route('/shared/<postname>/<int:postid>',methods=['POST','GET'])
 @login_required
-@cache.cached(timeout=50, key_prefix='post_page')
+#@cache.cached(timeout=50, key_prefix='post_page')
 def post_page(postname, postid):
   """
   """
@@ -918,7 +918,7 @@ def post_page(postname, postid):
 
 @app.route('/comments/<int:postid>',methods=['GET'])
 @login_required
-@cache.cached(timeout=40, key_prefix='all_post_comments')
+@cache.cached(timeout=30, key_prefix='all_post_comments')
 def all_post_comments(postid):
   post_id = ndb.Key(model.PostBox, postid)
   comments = model.PostComments.query(model.PostComments.post_id == post_id)
@@ -939,7 +939,7 @@ def all_post_comments(postid):
 
 
 @app.route('/shared', methods=['GET','POST'])
-@cache.cached(timeout=50, key_prefix='shared_posts')
+#@cache.cached(timeout=50, key_prefix='shared_posts')
 def shared_posts():
   sharedposts= model.PostBox.query()
   return render_template('shared_posts.html', sharedposts=sharedposts)
