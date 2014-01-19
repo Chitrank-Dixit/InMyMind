@@ -162,6 +162,13 @@ class PostBox(Base,  modelx.PostBoxX):
   language = ndb.StringProperty(required=True)
   credits = ndb.IntegerProperty()
 
+class FavouritePost(Base, modelx.PostBoxX):
+  postname = ndb.KeyProperty(kind='PostBox')
+  postid = ndb.KeyProperty(kind='PostBox')
+  postcomment = ndb.StringProperty()
+  favouritebyname = ndb.KeyProperty(kind='User')
+  favouritebyid = ndb.KeyProperty(kind='User')
+
 # comment on the posts
 class PostComments(Base, modelx.PostBoxX):
     name = ndb.KeyProperty(kind="User", required=True)

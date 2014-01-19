@@ -31,10 +31,18 @@
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script> -->
-
+    
 {% endblock %}
 {% block side_leftcontent %}
-   <p>Hehehe</p>
+    <font color="#00A40E"><i class="icon-3x icon-collapse-top"> </i> <br></font>
+    <font color="#C43F2C"><i class="icon-3x icon-collapse"> </i> <br></font
+    <b> 2000</b><br><br>
+    
+    <i class="icon-2x icon-star" data-bind="click: addFavourite"> </i></a><br><br>
+
+    <i class="icon-2x icon-flag"> </i><br>
+    Flag as Inappropriate
+
 {% endblock %}
 {% block main_content %}
 <h2>{{postname}}</h2>
@@ -230,6 +238,14 @@ function AddInvite(data) {
 
 function CommentViewModel() {
     var self = this;
+    /* vote up and vote down */
+    self.up = ko.observable();
+    self.down = ko.observable();
+
+
+    /* favourite post */
+    self.fav = ko.observable();
+
     self.users = ko.observableArray([]);
     self.userInfo = ko.observableArray([]);
     self.invites = ko.observableArray([]);
@@ -257,6 +273,12 @@ function CommentViewModel() {
             self.save();
         }
         self.comment("");
+        
+        
+    };
+
+    self.addFavourite = function() {
+        self.saveFavourite();
         
         
     };
@@ -304,6 +326,30 @@ function CommentViewModel() {
             }
         });
     };
+
+    self.saveFavourite = function() {
+        return $.ajax({
+            url: "{{ url_for('add_favourite', postname = postname , postid = postid , postcomment = current_post.comment) }}",
+            contentType: 'application/json',
+            type: 'POST',
+            data: JSON.stringify({
+                
+            }),
+
+
+            success: function(data) {
+                document.write('Post has been added to your favourite');
+                return;
+            },
+            error: function() {
+              console.log(ename);
+                return console.log("Failed");
+            }
+        });
+    };
+
+
+
 }
 
 

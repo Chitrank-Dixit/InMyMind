@@ -69,15 +69,13 @@
     
     {% block head_script %}{# defer-incapable JS block #}{% endblock %} 
 </head>
-<body >
+<body>
 <div id="header">
         {% include 'addables/header.html' %} {# pull in navbar #}
 </div>
 <div id="wrap">
     
     <div class="container" id="maincontent">
-        
-        
         <div class="container-fluid">
             {% include 'addables/flash_message.html' %} {# page-level feedback notices #}
             <div class="row-fluid">

@@ -311,6 +311,16 @@ def user_profile(name,uid):  #
     post_db = post_st.filter(model.PostBox.postbyid == user_key)
     sharedposts = post_db.fetch()
 
+    # Favourite Posts
+    favposts = model.FavouritePost.query()
+    favposts1 = favposts.filter(model.FavouritePost.favouritebyid == user_key)
+    favouriteposts = favposts1.fetch()
+
+    # post comments by this user
+    postcomments = model.PostComments.query()
+    postcomments1 = postcomments.filter(model.PostComments.user_id == user_key)
+    PostComment = postcomments1.fetch()
+
 
     # followers ( user following to and user's followers )
     followers = model.Followers.query()
@@ -346,7 +356,7 @@ def user_profile(name,uid):  #
 
     return flask.render_template('profile.html',
      user = user, euid= euid, followers = followers, form=form, inbox=inbox,
-     user_in = user_in , sharedposts = sharedposts
+     user_in = user_in , sharedposts = sharedposts, favouriteposts = favouriteposts, PostComment = PostComment 
      )
   else:
     flask.flash('Please log in to view this page')
@@ -943,6 +953,32 @@ def all_post_comments(postid):
 def shared_posts():
   sharedposts= model.PostBox.query()
   return render_template('shared_posts.html', sharedposts=sharedposts)
+
+@app.route('/addFavourite/<postname>/<int:postid>', methods=['POST','GET'])
+@login_required
+def add_favourite(postname, postid):
+  user_id = ndb.Key(model.User, current_user.id)
+  user_name = ndb.Key(model.User, current_user.name)
+  post_id = ndb.Key(model.PostBox, postid)
+  post_name = ndb.Key(model.PostBox, postname)
+  postdone = model.PostBox.retrieve_one_by('key' ,post_id )
+  print postdone.comment
+  if 'username' in session:
+    if request.method == 'POST':
+      addfav = model.FavouritePost(
+        postname = post_name,
+        postid = post_id,
+        postcomment = postdone.comment,
+        favouritebyname = user_name,
+        favouritebyid = user_id
+        )
+      try:
+        addfav.put()
+      except CapabilityDisabledError:
+        flash('Something went wrong and your comment has not been posted', category='danger')
+  else:
+    return redirect(url_for('signin'))
+
 
 
 

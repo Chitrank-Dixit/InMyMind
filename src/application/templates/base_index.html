@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
     <title>{% block title%}Flask on App Engine{% endblock %}</title>
-    <link rel="favicon" href="{{ url_for('static', filename='static/img/favicon.ico') }} " />
+    <link rel="favicon" href="{{ url_for('static', filename='static/img/favicon.ico') }} " /> 
     <link href="{{ url_for('static', filename='bootstrap/css/bootstrap2.3.2.css') }}" rel="stylesheet" />
 
 
@@ -34,7 +34,7 @@
     <!-- Custom styles for this template -->
    
     <!-- <link href="{{ url_for('static', filename='bootstrap/css/social-buttons.css') }}" rel="stylesheet"> -->
-    <style> body { padding-top: 90px; } </style> <!-- Bootstrap -->
+    <style> /*body { padding-top: 90px; }*/ </style> <!-- Bootstrap -->
      <!-- <link href="/static/css/main.css" rel="stylesheet" /> --> 
     
     {% block style_block %}{# page-specific CSS #}{% endblock %}
@@ -46,7 +46,7 @@
     <div id="header">
         {% include 'addables/header.html' %} {# pull in navbar #}
     </div>
-    <div class="" id="maincontent" style="margin-top:-50px;">
+    <div id="maincontent" style="padding-top: 90px;">
         {% include 'addables/flash_message.html' %} {# page-level feedback notices #}
         <div id="body_content">
             {% block content %}{# main content area #}{% endblock %}

@@ -21,12 +21,14 @@
 
         {% elif current_user.is_following(user) %}
   		  	<a href="{{ url_for('unfollow_user', name=user.name, uid=euid) }}" role="button" class="btn btn-danger" data-toggle="Edit Your Profile Data"  title="Unfollow this User">Unfollow</a>
-          <!-- <button data-bind="click: unfollowUser" class="btn btn-danger" data-toggle="Edit Your Profile Data"  title="Unfollow this User">Unfollow</button> --> 
+          <!-- <button data-bind="click: unfollowUser" class="btn btn-danger" data-toggle="Edit Your Profile Data"  title="Unfollow this User">Unfollow</button> -->
+          
           <br><br>
             
         {% else %}
-  		  	<a href="{{ url_for('follow_user', name=user.name, uid=euid) }}" class="btn btn-success" data-toggle="Edit Your Profile Data"  title="Follow this User">Follow</a> 
-          <!-- <button data-bind="click: followUser" class="btn btn-success" data-toggle="Edit Your Profile Data"  title="Follow this User">Follow</button> -->
+  		  	<a href="{{ url_for('follow_user', name=user.name, uid=euid) }}" class="btn btn-success" data-toggle="Edit Your Profile Data"  title="Follow this User">Follow</a>  
+          <!-- <button data-bind="click: followUser" class="btn btn-success" data-toggle="Edit Your Profile Data"  title="Follow this User">Follow</button>
+           -->
           <br><br><br>
 
             
@@ -84,7 +86,7 @@
       
       {% for posts in sharedposts %}
           <br>
-          <div class="well-inverse">
+        <div class="well-inverse">
           <div class="panel-heading">
           <h3 class="panel-title">
             <a href="{{ url_for('post_page', postname=posts.postname , postid=posts.key.id() )}}">{{ posts.postname }}</a></h3>
@@ -98,9 +100,31 @@
       
       {% endif %}
     </div>
-		<div class="tab-pane" id="favourites">Be Strong </div>
+		<div class="tab-pane" id="favourites">
+      {% for favpost in favouriteposts %}
+        <div class="well-inverse">
+          <div class="panel-heading">
+          <h3 class="panel-title">
+            <a href="{{ url_for('post_page', postname=favpost.postname.string_id() , postid=favpost.postid.integer_id() )}}">{{ favpost.postname.string_id() }}</a></h3>
+          </div>
+          <div class="panel-body">
+              {{ favpost.postcomment }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
 		<div class="tab-pane" id="comments">
-			
+			{% for postcom in PostComment %}
+        <div class="well-inverse">
+          <div class="panel-heading">
+          <h3 class="panel-title">
+            <a href="{{ url_for('post_page', postname=postcom.post_name.string_id() , postid=postcom.post_id.integer_id() )}}">{{ postcom.name.string_id() }}</a></h3>
+          </div>
+          <div class="panel-body">
+              {{ postcom.comment }}
+          </div>
+        </div>
+      {% endfor %}
 
 		</div>
     
@@ -255,6 +279,8 @@ function FollowViewModel() {
     self.allSelected= ko.observable(false);
     self.url =  ko.observable("{{ url_for('follow_user', name=user.name, uid=euid) }}");
     
+    
+
     self.selectAll = function() {
         var all = self.allSelected();
         ko.utils.arrayForEach(self.users(), function(user) {
@@ -272,13 +298,13 @@ function FollowViewModel() {
     
 
     self.followUser = function() {
-        self.saveFollow();
+        return self.saveFollow();
                
         
     };
 
     self.unfollowUser = function() {
-        self.saveUnfollow();
+        return self.saveUnfollow();
                
         
     };
