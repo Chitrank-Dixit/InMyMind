@@ -36,10 +36,10 @@
 <br><br>
 
 
-{% for posts in sharedposts %}
+<!-- {% for posts in sharedposts %}
 <!-- Pannel code is not working here ! Include for loop in content body instead -->
 
-<div class="well-inverse">
+<!-- <div class="well-inverse">
     <div class="panel-heading">
       <a href="{{ url_for('post_page', postname=posts.postname, postid = posts.key.id() )}}">{{ posts.postname }}</a> <br>
       {{ posts.postUrl }}
@@ -56,8 +56,93 @@
 <br><br>
 
 
-{% endfor %}
-            
+{% endfor %} -->
+        
+<ul data-bind="foreach: posts, visible: posts().length > 0">
+  <div class="well-inverse">
+    <div class="panel-heading">
+       <a data-bind="attr: { href: '/shared/' + postname() + '/' + postid()  }"><p data-bind="text: postname"></p></a>
+       <p data-bind="text: posturl"></p>
+        
+    </div>
+    <div class="panel-body">
+      <p data-bind="text: about"></p>
+    </div>
+    <div class="panel-footer">
+      <a data-bind="attr: { href: '/user/' + postbyname() + '/' + postbyid() + '/' }"><p data-bind="text: postbyname"></p></a>
+    </div>
+    
+  </div>
+</ul>
 
 
+{% endblock %}
+
+{% block tail_script %}
+<script type="text/javascript">
+$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+
+
+
+$(document).ready(function () {
+    
+
+
+    
+});
+
+
+    
+    
+    
+
+
+
+
+
+
+
+// Knockoutjs Comment Code
+
+function Post(data) {
+    this.postbyname = ko.observable(data.postbyname);
+    this.postbyid = ko.observable(data.postbyid);
+    this.postname =ko.observable(data.postname);
+    this.postid =ko.observable(data.postid);
+    this.posturl = ko.observable(data.posturl);
+    this.about = ko.observable(data.about);
+    this.tags = ko.observable(data.tags);
+    this.comment = ko.observable(data.comment);
+    this.language = ko.observable(data.language);
+    this.credits = ko.observable(data.credits);
+    this.avatar = ko.observable(data.avatar);
+}
+
+
+function PostViewModel() {
+    var self = this;
+    self.posts = ko.observableArray([]);
+   
+    $.getJSON("{{ url_for('all_shared_posts') }}", function(postModels) {
+        var t = $.map(postModels.posts, function(item) {
+            console.log(item);
+            return new Post(item);
+
+        });
+        self.posts(t);
+
+    });
+}
+
+
+
+
+// Activates knockout.js
+ko.applyBindings(new PostViewModel());
+
+
+
+
+</script>
 {% endblock %}

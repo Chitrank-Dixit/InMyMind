@@ -140,7 +140,7 @@ def signin():
       userdata = userd2.fetch()
       for user in userdata:
         if user.password:
-          message = mail.EmailMessage(sender='chitrankdixit@gmail.com',subject="Shared: Password Recovery")
+          message = mail.EmailMessage(sender='chitrankdixit@gmail.com',subject="InMyMind: Password Recovery")
           print message
           message.to=forgot_form.email.data
           message.body = """
@@ -151,8 +151,9 @@ def signin():
 
           Please let us know if you have any questions.
 
-          The Eventus Team
+          The InMyMind Team
           """ % (user.name, user.password, "http://alien-device-451.appspot.com/")
+          message.send()
           flask.flash(user.name + "Password has been recovered please check your registered email" , category = "success")
         else:
           flask.flash(user.name + "with " +forgot_form.email.data + "does not exist or might signed in to the application using social signin" , category = "danger")
@@ -226,7 +227,7 @@ def signup():
         try:
             signup.put()
             #signup_id = .key.id()
-            message = mail.EmailMessage(sender='chitrankdixit@gmail.com',subject="Welcome to Shared")
+            message = mail.EmailMessage(sender='chitrankdixit@gmail.com',subject="Welcome to InMyMind")
             print message
             message.to=form.email.data
             message.body = """
@@ -237,7 +238,7 @@ def signup():
 
             Please let us know if you have any questions.
 
-            The Eventus Team
+            The InMyMind Team
             """ % (form.name.data, "http://alien-device-451.appspot.com/")
 
             # message.html = """
@@ -847,6 +848,7 @@ def share_a_post():
     print use_db, id_db.integer_id()
     if request.method=='POST':
       print "hii"
+      avatarKey = ndb.Key(model.User, current_user.avatar(30))
       sharepost = model.PostBox(
         postbyname = use_db,
         postbyid = id_db,
@@ -857,7 +859,8 @@ def share_a_post():
         comment = form.comment.data , 
         language = form.language.data,
         tags = form.tags.data,
-        credits = 100 
+        credits = 100 , 
+        avatar = avatarKey
         )
       try:
         sharedpost = sharepost.put()
@@ -903,14 +906,14 @@ def post_page(postname, postid):
     # print request.json, type(comment_json)
     if request.method == 'POST' and comment_json:
       print request.json
-      avatarUrl = ndb.Key(model.User, request.json['avatar'])
+      avatarKey = ndb.Key(model.User, request.json['avatar'])
       comments = model.PostComments(
           name = name,
           user_id = user_id,
           post_id = post_id,
           post_name = post_name,
           comment = request.json['comment'],
-          avatar = avatarUrl
+          avatar = avatarKey
         )
       try:
         posted = comments.put()
@@ -954,6 +957,33 @@ def shared_posts():
   sharedposts= model.PostBox.query()
   return render_template('shared_posts.html', sharedposts=sharedposts)
 
+@app.route('/all_shared_posts', methods=['GET'])
+def all_shared_posts():
+  posts = model.PostBox.query()
+  posts = posts.order(model.PostBox.created)
+  posts_store = posts.fetch()
+  first = {}; posts = []
+  for post in posts_store:
+    first['postbyname'] = post.postbyname.string_id()
+    first['postbyid'] = post.postbyid.integer_id()
+    first['postname'] = post.postname
+    first['postid'] = post.key.id()
+    first['posturl'] = post.postUrl
+    first['about']= post.about
+    first['tags'] =  post.tags
+    first['comment'] = post.comment
+    first['language'] = post.language
+    first['credits'] = post.credits
+    first['avatar'] = post.avatar.string_id()
+    print first['postname']
+    posts.append(first)
+    first = {}
+  return jsonify(posts=posts)
+
+
+
+
+
 @app.route('/addFavourite/<postname>/<int:postid>', methods=['POST','GET'])
 @login_required
 def add_favourite(postname, postid):
@@ -979,7 +1009,17 @@ def add_favourite(postname, postid):
   else:
     return redirect(url_for('signin'))
 
+@app.route('/addUpVote/<postname>/<int:postid>', methods=['POST','GET'])
+@login_required
+def addUpVote(postname, postid):
+  """
+  """
 
+@app.route('/deleteVote/<postname>/<int:postid>', methods=['POST','GET'])
+@login_required
+def deleteVote(postname, postid):
+  """
+  """
 
 
 #################################################################

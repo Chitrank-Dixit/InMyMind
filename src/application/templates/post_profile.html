@@ -34,8 +34,8 @@
     
 {% endblock %}
 {% block side_leftcontent %}
-    <font color="#00A40E"><i class="icon-3x icon-collapse-top"> </i> <br></font>
-    <font color="#C43F2C"><i class="icon-3x icon-collapse"> </i> <br></font
+    <font color="#00A40E"><i class="icon-3x icon-collapse-top" data-bind="click: addVote"> </i> <br></font>
+    <font color="#C43F2C"><i class="icon-3x icon-collapse" data-bind="click: deleteVote"> </i> <br></font
     <b> 2000</b><br><br>
     
     <i class="icon-2x icon-star" data-bind="click: addFavourite"> </i></a><br><br>
@@ -283,6 +283,18 @@ function CommentViewModel() {
         
     };
 
+    self.addVote = function() {
+        self.addUpVote();
+        
+        
+    };
+
+    self.deleteVote = function() {
+        self.deleteVote();
+        
+        
+    };
+
     $.getJSON("{{ url_for('all_post_comments', postid=postid ) }}", function(commentModels) {
         var t = $.map(commentModels.comments, function(item) {
             return new Comment(item);
@@ -330,6 +342,48 @@ function CommentViewModel() {
     self.saveFavourite = function() {
         return $.ajax({
             url: "{{ url_for('add_favourite', postname = postname , postid = postid , postcomment = current_post.comment) }}",
+            contentType: 'application/json',
+            type: 'POST',
+            data: JSON.stringify({
+                
+            }),
+
+
+            success: function(data) {
+                document.write('Post has been added to your favourite');
+                return;
+            },
+            error: function() {
+              console.log(ename);
+                return console.log("Failed");
+            }
+        });
+    };
+
+    self.addUpVote = function() {
+        return $.ajax({
+            url: "{{ url_for('addUpVote', postname = postname , postid = postid ) }}",
+            contentType: 'application/json',
+            type: 'POST',
+            data: JSON.stringify({
+                
+            }),
+
+
+            success: function(data) {
+                document.write('Post has been added to your favourite');
+                return;
+            },
+            error: function() {
+              console.log(ename);
+                return console.log("Failed");
+            }
+        });
+    };
+
+    self.deleteVote = function() {
+        return $.ajax({
+            url: "{{ url_for('deleteVote', postname = postname , postid = postid ) }}",
             contentType: 'application/json',
             type: 'POST',
             data: JSON.stringify({
