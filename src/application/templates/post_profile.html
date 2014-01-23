@@ -290,7 +290,7 @@ function CommentViewModel() {
     };
 
     self.deleteVote = function() {
-        self.deleteVote();
+        self.deleteUpVote();
         
         
     };
@@ -371,7 +371,7 @@ function CommentViewModel() {
 
 
             success: function(data) {
-                document.write('Post has been added to your favourite');
+                document.write('Post has been up voted');
                 return;
             },
             error: function() {
@@ -381,7 +381,7 @@ function CommentViewModel() {
         });
     };
 
-    self.deleteVote = function() {
+    self.deleteUpVote = function() {
         return $.ajax({
             url: "{{ url_for('deleteVote', postname = postname , postid = postid ) }}",
             contentType: 'application/json',
@@ -392,7 +392,7 @@ function CommentViewModel() {
 
 
             success: function(data) {
-                document.write('Post has been added to your favourite');
+                document.write('Post has been down voted');
                 return;
             },
             error: function() {

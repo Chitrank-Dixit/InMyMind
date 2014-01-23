@@ -477,7 +477,6 @@ def user_notifications(name,uid):
 def user_profile_settings(name,uid):
   if 'username' in session:
     userSettings = UserSettingsForm(request.form)
-    user_is = model.User.query(model.User.name == name , model.User.id == uid)
     uiid = ndb.Key(model.User, uid)
     user = model.User.retrieve_one_by('name' and 'key' ,name and uiid)
     if userSettings.validate_on_submit() and request.method == 'POST':
@@ -1014,13 +1013,26 @@ def add_favourite(postname, postid):
 def addUpVote(postname, postid):
   """
   """
+  postidkey = ndb.Key(model.PostBox, postid)
+  postis = model.PostBox.retrieve_one_by('postname' and 'key', postname and postidkey)
+  print postis
+  if request.method == 'POST':
+    postis.credits = postis.credits + 10
+    postis.put()
+    flash('You voted up this post' , category="success")
+
 
 @app.route('/deleteVote/<postname>/<int:postid>', methods=['POST','GET'])
 @login_required
 def deleteVote(postname, postid):
   """
   """
-
+  postidkey = ndb.Key(model.PostBox, postid)
+  postis = model.PostBox.retrieve_one_by('postname' and 'key', postname and postidkey)
+  if request.method == 'POST':
+    postis.credits = postis.credits - 5
+    postis.put()
+    flash('You voted down this post', category="warning")
 
 #################################################################
 # Create an Event
