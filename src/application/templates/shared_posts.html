@@ -25,6 +25,16 @@
   
   </style>
 {% endblock %}
+{% block side_rightcontent %}
+  <!--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:250px;height:250px"
+         data-ad-client="ca-pub-7924176099017130"
+         data-ad-slot="7836198484"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script> -->
+{% endblock %}
 {% block main_content %}
 
 <div class="row pull-right">
@@ -36,28 +46,7 @@
 <br><br>
 
 
-<!-- {% for posts in sharedposts %}
-<!-- Pannel code is not working here ! Include for loop in content body instead -->
-
-<!-- <div class="well-inverse">
-    <div class="panel-heading">
-      <a href="{{ url_for('post_page', postname=posts.postname, postid = posts.key.id() )}}">{{ posts.postname }}</a> <br>
-      {{ posts.postUrl }}
-    </div>
-    <div class="panel-body">
-        {{ posts.about }}<br><br>
-    </div>
-    <div class="panel-footer">
-      
-    </div>
-        
-    
-</div>                
-<br><br>
-
-
-{% endfor %} -->
-        
+       
 <ul data-bind="foreach: posts, visible: posts().length > 0">
   <div class="well-inverse">
     <div class="panel-heading">
@@ -82,28 +71,7 @@
 <script type="text/javascript">
 $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 
-
-
-
-$(document).ready(function () {
-    
-
-
-    
-});
-
-
-    
-    
-    
-
-
-
-
-
-
-
-// Knockoutjs Comment Code
+// Knockoutjs Post Code
 
 function Post(data) {
     this.postbyname = ko.observable(data.postbyname);
@@ -128,10 +96,8 @@ function PostViewModel() {
         var t = $.map(postModels.posts, function(item) {
             console.log(item);
             return new Post(item);
-
         });
         self.posts(t);
-
     });
 }
 
