@@ -28,7 +28,7 @@
 {% block side_rightcontent %}
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- InMyMind-sidebar -->
-  <ins class="adsbygoogle"
+   <ins class="adsbygoogle"
        style="display:inline-block;width:300px;height:250px"
        data-ad-client="ca-pub-7924176099017130"
        data-ad-slot="7356690482"></ins>
@@ -39,12 +39,8 @@
 {% endblock %}
 {% block main_content %}
 
-<div class="row pull-right">
-<form class="form-search">
-  <input type="text" class="input-medium search-query">
-  <button type="submit" class="btn">Search</button>
-</form>
-</div>
+
+
 <br><br>
 
 
@@ -67,11 +63,18 @@
 </ul>
 
 
+
+
+
 {% endblock %}
 
 {% block tail_script %}
 <script type="text/javascript">
 $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+
+
+
 
 // Knockoutjs Post Code
 
@@ -93,7 +96,7 @@ function Post(data) {
 function PostViewModel() {
     var self = this;
     self.posts = ko.observableArray([]);
-   
+
     $.getJSON("{{ url_for('all_shared_posts') }}", function(postModels) {
         var t = $.map(postModels.posts, function(item) {
             console.log(item);
@@ -101,6 +104,11 @@ function PostViewModel() {
         });
         self.posts(t);
     });
+
+
+    
+    
+    
 }
 
 
