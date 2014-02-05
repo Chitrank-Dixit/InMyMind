@@ -118,7 +118,7 @@ def signin():
     if form.validate_on_submit() and request.method == 'POST':
         
         # model.User.retrieve_one_by('username', form.username.data) && model.User.retrieve_one_by('password', form.password.data) is not None:
-        user_db = model.User.retrieve_one_by('name' and  'password',form.name.data and form.password.data)
+        user_db = model.User.retrieve_one_by('name' and  'password',form.name.data and md5(form.password.data).hexdigest())
         #user_is = model.User.query(model.User.name == form.name.data, model.User.password == form.password.data)
         if not user_db:
           flash('Please check the username or password')
@@ -198,7 +198,7 @@ def signup():
     form = SignupForm(request.form)
     #next = request.args.get('next')
     if form.validate_on_submit() and request.method=='POST':
-        user_db = model.User.retrieve_one_by('name' and 'email' and 'password' , form.name.data and form.email.data and form.password.data)
+        user_db = model.User.retrieve_one_by('name' and 'email' and 'password' , form.name.data and form.email.data and md5(form.password.data).hexdigest())
 
         
         if user_db != None:
@@ -214,7 +214,7 @@ def signup():
             name = form.name.data,
             username = form.name.data,
             email = form.email.data,
-            password = form.password.data,
+            password = md5(form.password.data).hexdigest(),
             #avatar = avatar
              
         )

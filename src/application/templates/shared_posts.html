@@ -62,6 +62,26 @@
   </div>
 </ul>
 
+<hr>
+
+<form action="#"> 
+        <input placeholder="Search…" type="search" name="q" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off"> 
+</form> 
+<!-- 
+
+<div class="content"> 
+    <ul data-bind="template: {name:'post', foreach:postlists}"> 
+    </ul> 
+</div> 
+
+<script type="text/html" id="post"> 
+    <li>
+        <strong data-bind="text: postname"></strong> –
+        <span data-bind="text: posturl"></span> –
+        <span data-bind="text: credits"></span>
+    </li>
+</script> 
+ -->
 
 
 
@@ -69,6 +89,7 @@
 {% endblock %}
 
 {% block tail_script %}
+<script src="{{ url_for('static', filename='bootstrap/js/jquery.tmpl.js') }}"></script>
 <script type="text/javascript">
 $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 
@@ -96,17 +117,33 @@ function Post(data) {
 function PostViewModel() {
     var self = this;
     self.posts = ko.observableArray([]);
+    /*self.postied = ko.observableArray([]);*/
+    self.query = ko.observable('');
 
     $.getJSON("{{ url_for('all_shared_posts') }}", function(postModels) {
         var t = $.map(postModels.posts, function(item) {
-            console.log(item);
+            // console.log(item);
+            //self.postied.push(item);
             return new Post(item);
         });
+        
         self.posts(t);
+        
     });
-
-
-    
+    /*var p = self.postied();
+    console.log("p",self.postied());
+    self.postlists = ko.dependentObservable(function() {
+        console.log("OK");
+        var search = self.query().toLowerCase();
+        console.log("OK");
+        return ko.utils.arrayFilter(p, function(post) {
+            console.log("OK");
+            return post.postname.toLowerCase().indexOf(search) >= 0;
+            console.log("OK");
+        });
+        console.log("OK");
+    });
+    */
     
     
 }
