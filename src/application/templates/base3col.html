@@ -12,6 +12,7 @@
     <link href="{{ url_for('static', filename='bootstrap/css/bootstrap2.3.2.css') }}" rel="stylesheet" />
 
     <link href="{{ url_for('static', filename='bootstrap/css/panels.css') }}" rel="stylesheet">
+    
 
     <!-- Bootstrap theme -->
     <style type="text/css">
@@ -59,6 +60,8 @@
     <!-- Custom styles for this template -->
     <link href="{{ url_for('static', filename='bootstrap/css/panels.css') }}" rel="stylesheet">
     <!-- <link href="{{ url_for('static', filename='bootstrap/css/social-buttons.css') }}" rel="stylesheet"> -->
+    <link href="{{ url_for('static', filename='bootstrap/css/back-to-top.css') }}" rel="stylesheet"> 
+
     <style> body { /*padding-top: 90px;*/ 
         margin-bottom: -90px;
         background-color: #F5F5F5;
@@ -98,9 +101,34 @@
         {% include 'addables/footer.html' %}
     </div><!-- /footer -->
     
-    <script src="{{ url_for('static', filename='bootstrap/js/json2.js') }}"></script>
-    <script src="{{ url_for('static', filename='bootstrap/js/jquery-1.10.2.min.js') }}"></script>
     
+
+    <script src="{{ url_for('static', filename='bootstrap/js/json2.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='bootstrap/js/jquery-1.10.2.min.js') }}"></script>
+
+    <script type="text/javascript">
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        $(document).ready(function() {
+            var offset = 100;
+            var duration = 200;
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > offset) {
+                    $('.back-to-top').fadeIn(duration);
+                } else {
+                    $('.back-to-top').fadeOut(duration);
+                }
+            });
+    
+            $('.back-to-top').click(function(event) {
+                event.preventDefault();
+                $('html, body').animate({scrollTop: 0}, duration);
+                return false;
+            })
+        });
+
+    </script>
+
     <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
     
     <script src="{{ url_for('static', filename='bootstrap/js/holder.js') }}"></script>
@@ -114,6 +142,7 @@
 
     <script src="{{ url_for('static', filename='bootstrap/js/knockout-bootstrap.js') }}"></script>
 
+    
 
     <!-- <script src="{{ url_for('static', filename='bootstrap/js/sammy.js') }}"></script> -->
     

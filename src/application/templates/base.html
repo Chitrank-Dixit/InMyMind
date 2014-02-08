@@ -14,8 +14,12 @@
     <link href="{{ url_for('static', filename='bootstrap/css/bootstrap2.3.2.css') }}" rel="stylesheet" />
 
     <link href="{{ url_for('static', filename='bootstrap/css/bootstrap-responsive.min.css') }}" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='bootstrap/css/back-to-top.css') }}" rel="stylesheet">
     
     <link href='http://fonts.googleapis.com/css?family=Engagement' rel='stylesheet' type='text/css'>
+
+    <link href="{{ url_for('static', filename='bootstrap/css/back-to-top.css') }}" rel="stylesheet">
     <!-- Bootstrap theme -->
     <style type="text/css">
         @font-face {
@@ -105,7 +109,27 @@
 
     <!-- <script src="{{ url_for('static', filename='bootstrap/js/sammy.js') }}"></script> -->
     
+    <script type="text/javascript">
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        $(document).ready(function() {
+            var offset = 100;
+            var duration = 200;
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > offset) {
+                    $('.back-to-top').fadeIn(duration);
+                } else {
+                    $('.back-to-top').fadeOut(duration);
+                }
+            });
+    
+            $('.back-to-top').click(function(event) {
+                event.preventDefault();
+                $('html, body').animate({scrollTop: 0}, duration);
+                return false;
+            })
+        });
 
+    </script>
 
     <!-- <script src="/static/js/main.js"></script> -->
     {% block tail_script %}{# defer-capable JS block #}{% endblock %}
