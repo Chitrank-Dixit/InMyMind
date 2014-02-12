@@ -64,7 +64,7 @@ from hashlib import md5
 import util
 import model
 import config
-from forms import SignupForm, SigninForm, CreateEventForm , CreatePost , MessageForm, CommentForm, TeamRegisterForm, InviteUserForm, UserSettingsForm, PostBoxForm, ForgotPassword
+from forms import SignupForm, SigninForm, CreateEventForm , CreatePost , MessageForm, CommentForm, TeamRegisterForm, InviteUserForm, UserSettingsForm, PostBoxForm, ForgotPassword, ChangePassword
 # Google API python Oauth 2.0
 import httplib2
 
@@ -141,21 +141,25 @@ def signin():
       userdata = userd2.fetch()
       for user in userdata:
         if user.password:
+          print user.key.id()
           message = mail.EmailMessage(sender='chitrankdixit@gmail.com',subject="InMyMind: Password Recovery")
           print message
           message.to=forgot_form.email.data
           message.body = """
           Dear %s:
 
-          Your alien-device-451.appspot.com account password is %s.  You can now visit
-          %s and access our application's services and features.
+          Your alien-device-451.appspot.com account password will be changed.
 
+          please follow this link to confirm the password changed http://alien-device-451.appspot.com/user/%s/%s/%s and access our application's services and features.
+
+          
           Please let us know if you have any questions.
 
           The InMyMind Team
-          """ % (user.name, user.password, "http://alien-device-451.appspot.com/")
+          %s
+          """ % (user.name, user.name, user.key.id() ,user.password , "http://alien-device-451.appspot.com/")
           message.send()
-          flask.flash(user.name + "Password has been recovered please check your registered email" , category = "success")
+          flask.flash(user.name + " Password has been recovered please check your registered email" , category = "success")
         else:
           flask.flash(user.name + "with " +forgot_form.email.data + "does not exist or might signed in to the application using social signin" , category = "danger")
 
@@ -269,6 +273,20 @@ def signup():
     return flask.render_template('signup.html',form=form)
 
 
+@app.route('/user/<name>/<int:uid>/<hexcode>', methods=['POST','GET'])
+def recover_password(name,uid,hexcode):
+  '''
+  '''
+  user = model.User.retrieve_one_by('id' and 'password' , uid and hexcode)
+  form = ChangePassword(request.form)
+  if form.validate_on_submit() and request.method == 'POST':
+    user.password = md5(form.newpassword.data).hexdigest()
+    user.put()
+    flash('Password has been changed successfully !', category='success')
+    return redirect(url_for('index'))
+  return render_template('change_password.html', form=form, user=user)
+
+    
 
 
 # This is user profile
@@ -895,7 +913,9 @@ def post_page(postname, postid):
     name = ndb.Key(model.User, current_user.name)
     current_post  = model.PostBox.retrieve_one_by('postname' and 'key', postname and post_id)
     # if comments been posted
-    author = model.User.retrieve_one_by('key', user_id)
+    print "current_user",user_id
+    print "post page creator user",current_post.postbyid
+    author = model.User.retrieve_one_by('key', current_post.postbyid)
     print current_post
     comment_json = request.json
     # print "Here is the list",events.name
