@@ -220,8 +220,7 @@
 	</div>
 	<hr>
 
-Sample
-<button id="button" data-following="false">Follow</button>
+
 
 {% block tail_script %}   
 
@@ -234,16 +233,7 @@ $(document).ready(function () {
   
   
 
-//sample
-$("#button").click(function(){
-    if($(this).attr('data-following') == 'false'){
-        $(this).attr('data-following', 'true');
-        $(this).text('Unfollow');
-    }else if($(this).attr('data-following') == 'true'){
-        $(this).attr('data-following', 'false');
-        $(this).text('Follow');
-    }
-});
+
 
 $("#follow").click(function(){
     if($(this).attr('data-following') == 'false'){
