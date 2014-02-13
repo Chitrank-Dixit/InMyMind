@@ -347,6 +347,10 @@ def user_profile(name,uid):  #
 
     #followers_current = followers.filter(model.Followers.follower_id == user.name)
 
+    # following or not
+
+    followUnfollow = current_user.is_following(user)
+
     # send message to a particular User
     form= MessageForm(request.form)
     # Sending a Message to a user
@@ -376,10 +380,78 @@ def user_profile(name,uid):  #
 
     return flask.render_template('profile.html',
      user = user, euid= euid, followers = followers, form=form, inbox=inbox,
-     user_in = user_in , sharedposts = sharedposts, favouriteposts = favouriteposts, PostComment = PostComment 
+     user_in = user_in , sharedposts = sharedposts, favouriteposts = favouriteposts, PostComment = PostComment , followUnfollow = followUnfollow
      )
   else:
     flask.flash('Please log in to view this page')
+    return redirect(url_for('signin'))
+
+
+@app.route('/followorunfollow/<name>/<int:uid>', methods=['POST','GET'])
+@login_required
+def follow_unfollow(name,uid):
+  if 'username' in session:
+    n=name; ui=uid
+    user_is = model.User.query(model.User.name == name , model.User.id == uid)
+    if user_is==None:
+      return redirect(url_for('index'))
+    uiid = ndb.Key(model.User, uid)
+    user = model.User.retrieve_one_by('name' and 'key' ,name and uiid)
+
+    if not current_user.is_following(user):
+      if user == g.user:
+        flash('You can not Unfollow Yourself',category='warning')
+
+
+      cur_user = ndb.Key(model.Followers, current_user.name)
+      to_follow = ndb.Key(model.Followers, user.name)
+      model_ex = model.Followers.query()
+      print model_ex
+
+      for entry in model_ex:
+        if entry.follower_name.string_id() == current_user.id and entry.followed_name.string_id() == user.id:
+          flash('You are Already Following %s'%(user.name), category='warning')
+          return redirect(url_for('user_profile',name = n, uid= ui))
+
+
+      print ui
+      follower_name = ndb.Key(model.User, current_user.name)
+      followed_name = ndb.Key(model.User, user.name)
+      follower_avatar = ndb.Key(model.User, current_user.avatar(80))
+      followed_avatar = ndb.Key(model.User, user.avatar(80))
+      follow = model.Followers(
+        follower_name = follower_name,
+        follower_id = current_user.id, 
+        followed_name = followed_name,
+        followed_id = ui,
+        follower_avatar = follower_avatar,
+        followed_avatar = followed_avatar,
+        )
+      try:
+        follow.put()
+        # flash('%s you are now following %s' %(current_user.name,user.name), category='info')
+        redirect(url_for('user_profile', name=n, uid=ui))
+      except CapabilityDisabledError:
+        flash('Ahh Something Went wrong with the server',category = 'danger')  
+      return redirect(url_for('user_profile',name = n, uid= ui, m=False))
+      
+    else:
+      if user == g.user:
+        flash('You can not Unfollow Yourself',category='warning')
+
+      cur_user = ndb.Key(model.Followers, current_user.name)
+      to_follow = ndb.Key(model.Followers, name)
+
+      model_ex = model.Followers.query()
+      for entry in model_ex:
+        if entry.follower_name.string_id() == current_user.name and entry.followed_name.string_id() == name:
+          try:
+            entry.key.delete()
+            flash('You are not Following %s'%(name), category='info')
+          except CapabilityDisabledError:
+            flash(u'App Engine Datastore is currently in read-only mode.', category='danger')
+      return redirect(url_for('user_profile',name = n, uid= ui))
+  else:
     return redirect(url_for('signin'))
 
 
