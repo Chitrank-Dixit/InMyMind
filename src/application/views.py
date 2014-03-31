@@ -48,7 +48,7 @@ from models import *
 #from model import *
 import requests
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from google.appengine.api import users
 from json import dumps, loads
 
@@ -81,7 +81,8 @@ from flaskext.kvsession import KVSessionExtension
 # Mail settings specified
 # message = mail.InboundEmailMessage(request.body)
 
-
+# session.permanent = True
+app.permanent_session_lifetime = timedelta(minutes=5)
 
 
 @login_manager.user_loader
@@ -969,7 +970,7 @@ def share_a_post():
     return redirect(url_for('signin'))
 
 @app.route('/shared/<postname>/<int:postid>',methods=['POST','GET'])
-@login_required
+#@login_required
 #@cache.cached(timeout=50, key_prefix='post_page')
 def post_page(postname, postid):
   """
